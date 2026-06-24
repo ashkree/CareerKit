@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  /* ---------------------------------------------------------------
+     CareerKit palette — core / mantle / crust layering, green accent
+     --------------------------------------------------------------- */
+
+  /* Layers (light, cream-based working surfaces) */
+  --color-layer-core: #f4f1ea; /* page background */
+  --color-layer-mantle: #ebe6d9; /* recessed panels, metric tiles, composer */
+  --color-layer-crust: #ffffff; /* raised cards */
+  --color-layer-crust-accent: #eaf7ee; /* faint green tint inside cards (icon tiles) */
+
+  /* Layers (dark sidebar / chrome, kept from the original dark direction) */
+  --color-chrome-core: #16241b; /* sidebar background */
+  --color-chrome-mantle: #1d2f22; /* hover state on sidebar rows */
+  --color-chrome-crust: #243a29; /* active/elevated sidebar elements */
+
+  /* Brand / primary green */
+  --color-brand-50: #eaf7ee;
+  --color-brand-100: #cdeed9;
+  --color-brand-200: #a8e6bc;
+  --color-brand-300: #7ad79a;
+  --color-brand-400: #4abe7c;
+  --color-brand-500: #22a45d; /* primary brand color */
+  --color-brand-600: #178a4b; /* hover */
+  --color-brand-700: #0f6b3a; /* active / pressed */
+  --color-brand-800: #0b5230;
+  --color-brand-900: #06160e; /* text-on-brand */
+
+  /* Accent (amber) — secondary highlight, status, featured */
+  --color-accent-amber-50: #fbf0da;
+  --color-accent-amber-300: #f0c060;
+  --color-accent-amber-500: #e0a732;
+  --color-accent-amber-700: #9c6b0f;
+  --color-accent-amber-900: #412402;
+
+  /* Semantic colors */
+  --color-success: #178a4b;
+  --color-success-bg: #e7f5ec;
+  --color-success-border: #b7e2c6;
+
+  --color-warning: #9c6b0f;
+  --color-warning-bg: #fbf0da;
+  --color-warning-border: #f0d39c;
+
+  --color-danger: #b0382c;
+  --color-danger-bg: #fbeae8;
+  --color-danger-border: #f0c4bd;
+
+  --color-info: #266c99;
+  --color-info-bg: #e8f1f8;
+  --color-info-border: #bcdaee;
+
+  /* Text */
+  --color-text-primary: #23291f;
+  --color-text-secondary: #6b6f63;
+  --color-text-tertiary: #9a9c8f;
+  --color-text-on-brand: #06160e;
+  --color-text-link: #178a4b;
+  --color-text-inverted: #f4f1ea; /* for use on dark chrome */
+  --color-text-inverted-secondary: #c7d0c5;
+
+  /* Borders */
+  --color-border-subtle: #e2ddcf; /* card borders on crust/core */
+  --color-border-default: #d7d0bf; /* input borders, dividers */
+  --color-border-strong: #b8af98; /* emphasis, hover-adjacent */
+  --color-border-chrome: #2b3f30; /* dividers inside dark sidebar */
+
+  /* Interactive variants */
+  --color-interactive-default: #22a45d;
+  --color-interactive-hover: #178a4b;
+  --color-interactive-active: #0f6b3a;
+  --color-interactive-disabled: #e2ddcf;
+  --color-interactive-disabled-text: #9a9c8f;
+  --color-focus-ring: #4abe7c;
+
+  /* Radius (matches the demo mockups) */
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+body {
+  height: 100vh;
+  background-color: var(--color-layer-core);
+  color: var(--color-text-primary);
+}
+
+#root {
+  height: 100%;
+}
+body {
+  height: 100vh;
+}
+
+#root {
+  height: 100%;
+}
