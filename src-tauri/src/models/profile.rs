@@ -1,16 +1,12 @@
-use rusqlite::{params, Connection};
+use crate::models::shared::location::Location;
+use crate::models::shared::utilities::{deserialize_json_col, to_json_string};
+use rusqlite::{params, Connection, Error, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 struct ProfilePhone {
     country_code: String,
     number: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
-struct ProfileLocation {
-    city: String,
-    country: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
@@ -25,13 +21,14 @@ pub struct Profile {
     last_name: String,
     email: String,
     phone: ProfilePhone,
-    location: ProfileLocation,
+    location: Location,
     links: Vec<ProfileLink>,
     languages: Vec<String>,
 }
 
-pub fn get_profile(conn: &Connection) -> rusqlite::Result<Profile> {
-    let mut stmt = conn.prepare("SELECT * FROM profile WHERE id = 1")?;
+pub fn get_profile(conn: &Connection) -> Result<Profile, Error> {
+    let mut stmt = conn.prepare("SELECT * FROM profile")?;
+
     stmt.query_one([], |row| {
         Ok(Profile {
             first_name: row.get("first_name")?,
@@ -41,31 +38,19 @@ pub fn get_profile(conn: &Connection) -> rusqlite::Result<Profile> {
                 country_code: row.get("phone_country_code")?,
                 number: row.get("phone_number")?,
             },
-            location: ProfileLocation {
+            location: Location {
                 city: row.get("city")?,
                 country: row.get("country")?,
             },
-            links: serde_json::from_str(&row.get::<_, String>("links")?).map_err(|e| {
-                rusqlite::Error::FromSqlConversionFailure(
-                    7,
-                    rusqlite::types::Type::Text,
-                    Box::new(e),
-                )
-            })?,
-            languages: serde_json::from_str(&row.get::<_, String>("languages")?).map_err(|e| {
-                rusqlite::Error::FromSqlConversionFailure(
-                    8,
-                    rusqlite::types::Type::Text,
-                    Box::new(e),
-                )
-            })?,
+            links: deserialize_json_col(&row.get::<_, String>("links")?, 7)?,
+            languages: deserialize_json_col(&row.get::<_, String>("languages")?, 8)?,
         })
     })
 }
 
-pub fn upsert_profile(conn: &Connection, profile: Profile) -> Result<usize, String> {
-    let links_json = serde_json::to_string(&profile.links).map_err(|e| e.to_string())?;
-    let languages_json = serde_json::to_string(&profile.languages).map_err(|e| e.to_string())?;
+pub fn upsert_profile(conn: &Connection, profile: Profile) -> Result<usize, Error> {
+    let links_json = to_json_string(&profile.links)?;
+    let languages_json = to_json_string(&profile.languages)?;
 
     let rows_affected = conn
         .execute(
@@ -92,21 +77,32 @@ pub fn upsert_profile(conn: &Connection, profile: Profile) -> Result<usize, Stri
                 links_json,
                 languages_json,
             ],
-        )
-        .map_err(|e| e.to_string())?;
+        )?;
+
     Ok(rows_affected)
 }
 
 #[cfg(test)]
 mod tests {
-
     use super::*;
-    use crate::database::run_migrations;
 
     fn setup() -> Connection {
         let conn = Connection::open_in_memory().unwrap();
-
-        run_migrations(&conn).unwrap();
+        conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS profile (
+                id                  INTEGER PRIMARY KEY,
+                first_name          TEXT NOT NULL,
+                last_name           TEXT NOT NULL,
+                email               TEXT NOT NULL UNIQUE,
+                phone_country_code  TEXT NOT NULL,
+                phone_number        TEXT NOT NULL,
+                city                TEXT,
+                country             TEXT,
+                links               TEXT,
+                languages           TEXT
+            );",
+        )
+        .unwrap();
         conn
     }
 
@@ -119,7 +115,7 @@ mod tests {
                 country_code: "971".to_string(),
                 number: "555600680".to_string(),
             },
-            location: ProfileLocation {
+            location: Location {
                 city: "Dubai".to_string(),
                 country: "United Arab Emirates".to_string(),
             },
@@ -140,39 +136,52 @@ mod tests {
     #[test]
     fn test_fresh_insert_profile() {
         let conn = setup();
-        let profile = seed_data();
+        let rows_affected = upsert_profile(&conn, seed_data()).unwrap();
+        assert_eq!(rows_affected, 1);
+    }
 
-        let rows_affected = upsert_profile(&conn, profile).unwrap();
-        assert_eq!(rows_affected, 1)
+    #[test]
+    fn test_get_profile_not_found() {
+        let conn = setup();
+        let result = get_profile(&conn);
+        assert!(result.is_err());
     }
 
     #[test]
     fn test_get_profile() {
         let conn = setup();
         let profile = seed_data();
-
         upsert_profile(&conn, profile.clone()).unwrap();
-        let stored = get_profile(&conn).unwrap();
 
-        assert_eq!(profile, stored);
+        let stored = get_profile(&conn).unwrap();
+        assert_eq!(stored, profile);
     }
 
     #[test]
     fn test_update_profile() {
         let conn = setup();
+        upsert_profile(&conn, seed_data()).unwrap();
 
-        // Add seeded data
-        let profile = seed_data();
-        upsert_profile(&conn, profile).unwrap();
+        let mut updated = seed_data();
+        updated.first_name = "Maveron Tyriel".to_string();
+        upsert_profile(&conn, updated.clone()).unwrap();
 
-        // Add updated data
-        let mut updated_profile = seed_data();
-        updated_profile.first_name = "Maveron Tyriel".to_string();
-        upsert_profile(&conn, updated_profile.clone()).unwrap();
-
-        // Get stored data
         let stored = get_profile(&conn).unwrap();
+        assert_eq!(stored, updated);
+    }
 
-        assert_eq!(updated_profile, stored);
+    #[test]
+    fn test_update_profile_does_not_create_duplicate() {
+        let conn = setup();
+        upsert_profile(&conn, seed_data()).unwrap();
+
+        let mut updated = seed_data();
+        updated.first_name = "Maveron Tyriel".to_string();
+        upsert_profile(&conn, updated).unwrap();
+
+        let count: i64 = conn
+            .query_row("SELECT COUNT(*) FROM profile", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(count, 1);
     }
 }

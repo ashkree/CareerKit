@@ -9,7 +9,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .manage(database::AppDatabase {
-            conn: init_db().unwrap().into(),
+            conn: init_db(false).unwrap().into(),
         })
         .invoke_handler(tauri::generate_handler![
             commands::profile::get_profile,
