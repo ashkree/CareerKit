@@ -14,7 +14,6 @@ pub struct Experience {
     duration: Duration,
 }
 
-// Get Experiences
 fn get_experiences(conn: &Connection) -> Result<Vec<Experience>, Error> {
     let sql = "SELECT * FROM experience";
 
@@ -37,7 +36,6 @@ fn get_experiences(conn: &Connection) -> Result<Vec<Experience>, Error> {
     })
 }
 
-// Insert a new experience
 pub fn insert_experience(conn: &Connection, experience: Experience) -> Result<usize> {
     let highlights_json = to_json_string(&experience.highlights)?;
 
@@ -58,11 +56,10 @@ pub fn insert_experience(conn: &Connection, experience: Experience) -> Result<us
     Ok(row_count)
 }
 
-// Update an existing experience
 pub fn update_experience(
     conn: &Connection,
     experience: Experience,
-    exp_id: i64, // no need for Option here, we always need an id to update
+    exp_id: i64,
 ) -> rusqlite::Result<usize> {
     let highlights_json = serde_json::to_string(&experience.highlights)
         .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;

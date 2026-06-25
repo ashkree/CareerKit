@@ -1,0 +1,4 @@
+# In your project root folder
+connections:
+  - driver: sqlite3
+    dataSourceName: ./careerkit.db
