@@ -1,5 +1,6 @@
-use crate::features::profile::model::{Profile, ProfilePhone};
+use crate::features::profile::model::Profile;
 use crate::shared::location::Location;
+use crate::shared::phone::Phone;
 use crate::shared::utilities::{deserialize_json_col, to_json_string};
 use rusqlite::{params, Connection, Error, Result};
 
@@ -11,7 +12,7 @@ pub fn get_profile(conn: &Connection) -> Result<Profile, Error> {
             first_name: row.get("first_name")?,
             last_name: row.get("last_name")?,
             email: row.get("email")?,
-            phone: ProfilePhone {
+            phone: Phone {
                 country_code: row.get("phone_country_code")?,
                 number: row.get("phone_number")?,
             },
@@ -62,7 +63,7 @@ pub fn upsert_profile(conn: &Connection, profile: Profile) -> Result<usize, Erro
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::features::profile::model::ProfileLink;
+    use crate::shared::link::Link;
 
     fn setup() -> Connection {
         let conn = Connection::open_in_memory().unwrap();
@@ -89,7 +90,7 @@ mod tests {
             first_name: "Maveron".to_string(),
             last_name: "Aguares".to_string(),
             email: "maveron.dev@gmail.com".to_string(),
-            phone: ProfilePhone {
+            phone: Phone {
                 country_code: "971".to_string(),
                 number: "555600680".to_string(),
             },
@@ -98,11 +99,11 @@ mod tests {
                 country: "United Arab Emirates".to_string(),
             },
             links: vec![
-                ProfileLink {
+                Link {
                     name: "github".to_string(),
                     url: "https://github.com/ashkree".to_string(),
                 },
-                ProfileLink {
+                Link {
                     name: "linkedin".to_string(),
                     url: "https://www.linkedin.com/in/maveron-tyriel-aguares/".to_string(),
                 },
