@@ -1,4 +1,4 @@
-import { temp_profile, type Profile } from "../../types";
+import { temp_profile, type Profile } from "../types";
 import {
   MapPin,
   Phone,
@@ -9,16 +9,16 @@ import {
   Trash,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import TextField from "../common/forms/TextField";
-import IconText from "../common/IconText";
-import IconButton from "../common/buttons/IconButton";
-import EditableCard from "../common/cards/EditableCard";
-import { RemovableBadge, Badge } from "../common/badges";
-import { updateProp } from "../../utilities/data_updates";
+import TextField from "../../../shared/components/forms/TextField";
+import IconText from "../../../shared/components/IconText";
+import IconButton from "../../../shared/components/buttons/IconButton";
+import EditableCard from "../../../shared/components/cards/EditableCard";
+import { RemovableBadge, Badge } from "../../../shared/components/badges";
+import { updateProp } from "../../../shared/utils/data_updates";
 import { getCountries, getCountryCallingCode } from "react-phone-number-input";
-import Dropdown from "../common/forms/Dropdown";
-import type { DropdownOption } from "../common/forms/Dropdown";
-import { invoke } from "@tauri-apps/api/core";
+import Dropdown from "../../../shared/components/forms/Dropdown";
+import type { DropdownOption } from "../../../shared/components/forms/Dropdown";
+import { getProfile, upsertProfile } from "../api";
 
 type PersonalLinkProps = {
   name: string;
@@ -362,14 +362,6 @@ function DetailsView({ profile }: DetailsViewProps) {
       </div>
     </div>
   );
-}
-
-async function getProfile() {
-  return await invoke<Profile | null>("get_profile");
-}
-
-async function upsertProfile(profile: Profile) {
-  return await invoke<void>("upsert_profile", { profile });
 }
 
 export default function PersonalDetailsCard() {

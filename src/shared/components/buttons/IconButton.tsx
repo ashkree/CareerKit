@@ -9,7 +9,7 @@ type IconButtonProps = {
   text?: string;
   activeText?: string;
 
-  onClick: () => void | Promise<void>;
+  onClick: () => boolean | void | Promise<boolean | void>;
 
   defaultStyle?: string;
   hoverStyle?: string;

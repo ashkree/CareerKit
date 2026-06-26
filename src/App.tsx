@@ -1,5 +1,5 @@
 import CareerProfile from "./pages/CareerProfile.tsx";
-import Sidebar from "./components/layout/Sidebar.tsx";
+import Sidebar from "./layout/Sidebar.tsx";
 
 export default function App() {
   return (

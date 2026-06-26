@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import type { Skill } from "../../types";
-import { Badge, IconBadge } from "../common/badges";
-import EditableCard from "../common/cards/EditableCard";
-import TextField from "../common/forms/TextField";
+import type { Skill } from "../types";
+import { Badge, IconBadge } from "../../../shared/components/badges";
+import EditableCard from "../../../shared/components/cards/EditableCard";
+import TextField from "../../../shared/components/forms/TextField";
 import { Plus, X } from "lucide-react";
-import IconButton from "../common/buttons/IconButton";
-import { invoke } from "@tauri-apps/api/core";
-import { diffArrays } from "../../utilities/helpers";
+import IconButton from "../../../shared/components/buttons/IconButton";
+import { diffArrays } from "../../../shared/utils/helpers";
+import { getSkills, insertSkills, deleteSkills } from "../api";
 
 type EditingViewProps = {
   draft: Skill[];
@@ -78,17 +78,6 @@ function DetailsView({ skills }: DefailsViewProps) {
   );
 }
 
-async function getSkills() {
-  return await invoke<Skill[] | null>("get_skills");
-}
-
-async function insertSkills(skills: Skill[]) {
-  return await invoke<void>("insert_skills", { skills });
-}
-
-async function deleteSkills(skills: Skill[]) {
-  return await invoke<void>("delete_skills", { skills });
-}
 export default function SkillsCard() {
   const [savedSkills, setSavedSkills] = useState<Skill[]>([]);
   const [draft, setDraft] = useState<Skill[]>([]);

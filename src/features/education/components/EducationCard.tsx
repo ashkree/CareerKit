@@ -1,4 +1,4 @@
-import type { Education } from "../../types";
+import type { Education } from "../types";
 
 type EducationCardProps = {
   education: Education;

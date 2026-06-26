@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
-import PersonalDetailsCard from "../components/profile/PersonalDetailsCard";
-import SkillsCard from "../components/profile/SkillsCard";
+import PersonalDetailsCard from "../features/profile/components/PersonalDetailsCard";
+import SkillsCard from "../features/skills/components/SkillsCard";
 
 type SectionProps = {
   title: string;
