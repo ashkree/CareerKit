@@ -1,4 +1,4 @@
-use rusqlite::{params, Connection, Error, Row, ToSql};
+use rusqlite::{Connection, Error, Row, ToSql};
 
 pub fn query_rows<T, F>(
     conn: &Connection,
@@ -31,7 +31,4 @@ pub fn to_json_string<T: serde::Serialize>(value: &T) -> rusqlite::Result<String
     serde_json::to_string(value).map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))
 }
 
-pub fn delete_target(conn: &Connection, table: String, target_id: i64) -> Result<(), Error> {
-    conn.execute("DELETE FROM ?1 WHERE id = ?2", params![table, target_id])
-        .map(|_| ())
-}
+

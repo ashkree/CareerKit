@@ -2,9 +2,9 @@ use crate::features::experience::model::Experience;
 use crate::shared::location::Location;
 use crate::shared::utilities::{deserialize_json_col, query_rows, to_json_string};
 use crate::shared::duration::Duration;
-use rusqlite::{params, Connection, Result};
+use rusqlite::{params, Connection};
 
-pub fn get_experiences(conn: &Connection) -> Result<Vec<Experience>, rusqlite::Error> {
+pub fn get_experiences(conn: &Connection) -> rusqlite::Result<Vec<Experience>> {
     let sql = "SELECT * FROM experience";
 
     query_rows(conn, sql, params![], |row| {
@@ -26,7 +26,7 @@ pub fn get_experiences(conn: &Connection) -> Result<Vec<Experience>, rusqlite::E
     })
 }
 
-pub fn insert_experience(conn: &Connection, experience: Experience) -> Result<usize> {
+pub fn insert_experience(conn: &Connection, experience: Experience) -> rusqlite::Result<usize> {
     let highlights_json = to_json_string(&experience.highlights)?;
 
     let row_count = conn.execute(
@@ -51,8 +51,7 @@ pub fn update_experience(
     experience: Experience,
     exp_id: i64,
 ) -> rusqlite::Result<usize> {
-    let highlights_json = serde_json::to_string(&experience.highlights)
-        .map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;
+    let highlights_json = to_json_string(&experience.highlights)?;
 
     let row_count = conn.execute(
         "UPDATE experience SET
@@ -80,7 +79,7 @@ pub fn update_experience(
     Ok(row_count)
 }
 
-pub fn delete_experience(conn: &Connection, exp_id: i64) -> Result<usize> {
+pub fn delete_experience(conn: &Connection, exp_id: i64) -> rusqlite::Result<usize> {
     conn.execute("DELETE FROM experience WHERE id = ?1", params![exp_id])
 }
 

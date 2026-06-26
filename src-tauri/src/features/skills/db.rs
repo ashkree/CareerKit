@@ -14,7 +14,7 @@ pub fn get_skill(conn: &Connection, id: i64) -> Result<Skill, Error> {
 pub fn get_skills(conn: &Connection) -> Result<Vec<Skill>, Error> {
     let sql = "SELECT * FROM skill";
 
-    query_rows(&conn, sql, params![], |row| {
+    query_rows(conn, sql, params![], |row| {
         Ok(Skill {
             name: row.get("name")?,
         })
@@ -48,15 +48,13 @@ mod tests {
     fn setup() -> Connection {
         let conn = Connection::open_in_memory().unwrap();
 
-        _ = conn.execute(
-            "
-            CREATE TABLE IF NOT EXISTS skill (
+        conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS skill (
                id   INTEGER PRIMARY KEY AUTOINCREMENT,
                name TEXT NOT NULL UNIQUE
-                )
-            ",
-            [],
-        );
+            )",
+        )
+        .unwrap();
 
         conn
     }

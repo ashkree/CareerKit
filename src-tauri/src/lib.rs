@@ -6,7 +6,7 @@ mod seed;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let mut conn = init_db(false).unwrap();
+    let conn = init_db(false).unwrap();
     // seed::seed(&mut conn).expect("seeding faild");
 
     tauri::Builder::default()

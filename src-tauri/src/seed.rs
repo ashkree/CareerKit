@@ -1,3 +1,4 @@
+use crate::shared::link::Link;
 use rusqlite::{params, Connection, Result};
 
 /// Returns true if the database has already been seeded.
@@ -28,8 +29,12 @@ pub fn seed(conn: &mut Connection) -> Result<()> {
             "5559871234",
             "San Francisco",
             "United States",
-            r#"[{"name":"GitHub","url":"https://github.com/alexrivera"},{"name":"LinkedIn","url":"https://linkedin.com/in/alexrivera"}]"#,
-            r#"["English","Spanish"]"#,
+            serde_json::to_string(&vec![
+                Link { name: "GitHub".into(), url: "https://github.com/alexrivera".into() },
+                Link { name: "LinkedIn".into(), url: "https://linkedin.com/in/alexrivera".into() },
+            ])
+            .unwrap(),
+            serde_json::to_string(&vec!["English", "Spanish"]).unwrap(),
         ],
     )?;
 
@@ -75,7 +80,12 @@ pub fn seed(conn: &mut Connection) -> Result<()> {
             "Led backend platform work for a B2B SaaS product serving 50k+ businesses.",
             "2021-03",
             "2024-11",
-            r#"["Rewrote the core job-queue in Rust, cutting p99 latency by 60%","Mentored a team of 4 junior engineers","Shipped zero-downtime DB migration for 200 GB production database"]"#,
+            serde_json::to_string(&vec![
+                "Rewrote the core job-queue in Rust, cutting p99 latency by 60%",
+                "Mentored a team of 4 junior engineers",
+                "Shipped zero-downtime DB migration for 200 GB production database",
+            ])
+            .unwrap(),
         ],
     )?;
     let exp1_id = tx.last_insert_rowid();
@@ -94,7 +104,12 @@ pub fn seed(conn: &mut Connection) -> Result<()> {
             "Full-stack engineer on a consumer fintech product.",
             "2019-06",
             "2021-02",
-            r#"["Built real-time notification system using WebSockets","Reduced frontend bundle size by 35% via code splitting","Integrated Stripe and Plaid payment APIs"]"#,
+            serde_json::to_string(&vec![
+                "Built real-time notification system using WebSockets",
+                "Reduced frontend bundle size by 35% via code splitting",
+                "Integrated Stripe and Plaid payment APIs",
+            ])
+            .unwrap(),
         ],
     )?;
     let exp2_id = tx.last_insert_rowid();
