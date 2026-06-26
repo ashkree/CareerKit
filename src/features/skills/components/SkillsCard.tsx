@@ -8,73 +8,69 @@ import IconButton from "../../../shared/components/buttons/IconButton";
 import { diffArrays } from "../../../shared/utils/helpers";
 import { getSkills, insertSkills, deleteSkills } from "../api";
 
-type EditingViewProps = {
+function SkillsSection({
+  draft,
+  onChange,
+}: {
   draft: Skill[];
   onChange: Dispatch<SetStateAction<Skill[]>>;
-};
-
-function EditingView({ draft, onChange }: EditingViewProps) {
-  const [newSkill, setNewSkill] = useState<string>("");
+}) {
+  const [newSkill, setNewSkill] = useState("");
 
   return (
-    <form className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2 border-b border-border-subtle pb-3">
-        <div className="flex gap-2 items-center">
-          <div className="flex-1">
-            <TextField
-              id="skillInput"
-              type="text"
-              placeholder="Python"
-              value={newSkill}
-              onChange={setNewSkill}
+    <EditableCard.Section>
+      <EditableCard.Section.View>
+        {draft.length === 0 ? (
+          <p className="text-text-secondary">No skills added yet. Click the edit button to add your first skill.</p>
+        ) : (
+          <ul className="flex flex-wrap gap-2">
+            {draft.map((skill) => (
+              <Badge name={skill.name} />
+            ))}
+          </ul>
+        )}
+      </EditableCard.Section.View>
+
+      <EditableCard.Section.Edit>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2 items-center">
+            <div className="flex-1">
+              <TextField
+                id="skillInput"
+                type="text"
+                placeholder="Python"
+                value={newSkill}
+                onChange={setNewSkill}
+              />
+            </div>
+            <IconButton
+              icon={Plus}
+              text="Add"
+              onClick={() => {
+                if (!newSkill.trim()) return;
+                onChange((prev) => [...prev, { name: newSkill }]);
+                setNewSkill("");
+              }}
+              defaultStyle="text-text-secondary"
+              hoverStyle="hover:bg-layer-core hover:text-text-primary"
+              activeStyle="bg-layer-mantle text-text-secondary"
+              activeDuration={200}
             />
           </div>
-          <IconButton
-            icon={Plus}
-            text="Add"
-            onClick={() => {
-              if (!newSkill.trim()) return;
-              onChange((prev) => [...prev, { name: newSkill }]);
-              setNewSkill("");
-            }}
-            defaultStyle="text-text-secondary"
-            hoverStyle="hover:bg-layer-core hover:text-text-primary"
-            activeStyle="bg-layer-mantle text-text-secondary"
-            activeDuration={200}
-          />
+          <ul className="flex flex-wrap gap-2">
+            {draft.map((skill, index) => (
+              <IconBadge
+                icon={X}
+                name={skill.name}
+                onClick={() => {
+                  onChange((prev) => prev.filter((_, i) => i != index));
+                }}
+              />
+            ))}
+          </ul>
         </div>
-        <ul className="flex flex-wrap gap-2">
-          {draft.map((skill, index) => (
-            <IconBadge
-              icon={X}
-              name={skill.name}
-              onClick={() => {
-                onChange((prev) => prev.filter((_, i) => i != index));
-              }}
-            />
-          ))}
-        </ul>
-      </div>
-    </form>
-  );
-}
-
-type DefailsViewProps = {
-  skills: Skill[];
-};
-
-function DetailsView({ skills }: DefailsViewProps) {
-  console.log(skills);
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="border-b border-border-subtle pb-3 pr-8">
-        <ul className="flex flex-wrap gap-2">
-          {skills.map((skill) => (
-            <Badge name={skill.name} />
-          ))}
-        </ul>
-      </div>
-    </div>
+      </EditableCard.Section.Edit>
+    </EditableCard.Section>
   );
 }
 
@@ -125,11 +121,8 @@ export default function SkillsCard() {
   }
 
   return (
-    <EditableCard
-      view={() => <DetailsView skills={savedSkills} />}
-      edit={() => <EditingView draft={draft} onChange={setDraft} />}
-      onSave={handleSave}
-      onCancel={handleCancel}
-    />
+    <EditableCard onSave={handleSave} onCancel={handleCancel}>
+      <SkillsSection draft={draft} onChange={setDraft} />
+    </EditableCard>
   );
 }

@@ -13,9 +13,12 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_log::Builder::new()
-                .target(tauri_plugin_log::Target::new(
-                    tauri_plugin_log::TargetKind::Stdout,
-                ))
+                .targets([
+                    tauri_plugin_log::Target::new(
+                        tauri_plugin_log::TargetKind::Stdout,
+                    )
+                    .filter(|metadata| metadata.target().starts_with("career_kit")),
+                ])
                 .level(log::LevelFilter::Info)
                 .format(|out, message, record| {
                     out.finish(format_args!("[{}] {}", record.level(), message))

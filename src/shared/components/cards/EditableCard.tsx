@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import IconButton from "../buttons/IconButton";
-import { Save, SquarePen, X } from "lucide-react";
+import { Save, SquarePen, Trash, X } from "lucide-react";
 
 type EditableCardContextType = {
   isEditing: boolean;
@@ -12,22 +12,36 @@ const EditableCardContext = createContext<EditableCardContextType | null>(null);
 type EditableCardProps = {
   onSave: () => boolean | void | Promise<boolean | void>;
   onCancel: () => void;
+  onDelete?: () => void;
+  defaultEditing?: boolean;
   children: ReactNode;
 };
 
-function EditableCard({ onSave, onCancel, children }: EditableCardProps) {
-  const [isEditing, setIsEditing] = useState(false);
+function EditableCard({ onSave, onCancel, onDelete, defaultEditing = false, children }: EditableCardProps) {
+  const [isEditing, setIsEditing] = useState(defaultEditing);
 
   return (
     <EditableCardContext.Provider value={{ isEditing, setIsEditing }}>
-      {children}
       <div className="relative bg-layer-crust p-4 border border-border-subtle rounded-xl flex flex-col gap-2">
+        {children}
         {isEditing ? (
           <div className="flex items-center justify-end gap-2">
+            {onDelete && (
+              <IconButton
+                icon={Trash}
+                text="Delete"
+                onClick={onDelete}
+                defaultStyle="text-danger"
+                hoverStyle="hover:bg-danger-bg"
+              />
+            )}
             <IconButton
               icon={X}
               text="Cancel"
-              onClick={onCancel}
+              onClick={() => {
+                setIsEditing(false);
+                onCancel();
+              }}
               defaultStyle="text-text-secondary"
               hoverStyle="hover:bg-layer-mantle hover:text-text-primary"
             />

@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import PersonalDetailsCard from "../features/profile/components/PersonalDetailsCard";
 import SkillsCard from "../features/skills/components/SkillsCard";
+import ExperienceCard from "../features/experience/components/ExperienceCard";
 
 type SectionProps = {
   title: string;
@@ -25,6 +26,7 @@ export default function ProfileForm() {
       <div className="flex flex-col gap-8">
         <Section title="Personal Details" body={<PersonalDetailsCard />} />
         <Section title="Skills" body={<SkillsCard />} />
+        <Section title="Experience" body={<ExperienceCard />} />
       </div>
     </>
   );
