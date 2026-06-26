@@ -1,6 +1,8 @@
 use rusqlite::{params, Connection, Error};
 use serde::{Deserialize, Serialize};
 
+use crate::models::shared::utilities::query_rows;
+
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct Skill {
     pub name: String,
@@ -15,19 +17,14 @@ pub fn get_skill(conn: &Connection, id: i64) -> Result<Skill, Error> {
     })
 }
 
-pub fn get_skills(conn: &Connection) -> Result<Vec<Skill>, String> {
-    let mut stmt = conn
-        .prepare("SELECT * FROM skill")
-        .map_err(|e| e.to_string())?;
-    let iter = stmt
-        .query_map([], |row| {
-            Ok(Skill {
-                name: row.get("name")?,
-            })
+pub fn get_skills(conn: &Connection) -> Result<Vec<Skill>, Error> {
+    let sql = "SELECT * FROM skill";
+
+    query_rows(&conn, sql, params![], |row| {
+        Ok(Skill {
+            name: row.get("name")?,
         })
-        .map_err(|e| e.to_string())?;
-    iter.collect::<rusqlite::Result<Vec<Skill>>>()
-        .map_err(|e| e.to_string())
+    })
 }
 
 pub fn insert_skills(conn: &mut Connection, skills: Vec<Skill>) -> Result<(), Error> {
@@ -37,6 +34,14 @@ pub fn insert_skills(conn: &mut Connection, skills: Vec<Skill>) -> Result<(), Er
             "INSERT OR IGNORE INTO skill (name) VALUES (?1)",
             params![skill.name],
         )?;
+    }
+    tx.commit()
+}
+
+pub fn delete_skills(conn: &mut Connection, skills: Vec<Skill>) -> Result<(), Error> {
+    let tx = conn.transaction()?;
+    for skill in skills {
+        tx.execute("DELETE FROM skill WHERE name = ?1", params![skill.name])?;
     }
     tx.commit()
 }
@@ -116,6 +121,17 @@ mod tests {
 
         let stored = get_skill(&conn, 1).unwrap();
         assert_eq!(stored.name, "Flipping Burgers");
+    }
+
+    #[test]
+    fn test_delete_skills() {
+        let mut conn = setup();
+        let skills = seed_data();
+        insert_skills(&mut conn, skills.clone()).unwrap();
+
+        delete_skills(&mut conn, skills[2..4].to_vec()).unwrap();
+        let stored = get_skills(&conn).unwrap();
+        assert_eq!(stored.len(), 2);
     }
 
     #[test]

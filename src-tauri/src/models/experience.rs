@@ -14,7 +14,7 @@ pub struct Experience {
     duration: Duration,
 }
 
-fn get_experiences(conn: &Connection) -> Result<Vec<Experience>, Error> {
+pub fn get_experiences(conn: &Connection) -> Result<Vec<Experience>, Error> {
     let sql = "SELECT * FROM experience";
 
     query_rows(conn, sql, params![], |row| {
@@ -88,6 +88,10 @@ pub fn update_experience(
         ],
     )?;
     Ok(row_count)
+}
+
+pub fn delete_experience(conn: &Connection, exp_id: i64) -> Result<usize> {
+    conn.execute("DELETE FROM experience WHERE id = ?1", params![exp_id])
 }
 
 #[cfg(test)]

@@ -1,18 +1,20 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import type { Skill } from "../../types";
 import { Badge, IconBadge } from "../common/badges";
 import EditableCard from "../common/cards/EditableCard";
 import TextField from "../common/forms/TextField";
-import { Edit, Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import IconButton from "../common/buttons/IconButton";
+import { invoke } from "@tauri-apps/api/core";
+import { diffArrays } from "../../utilities/helpers";
 
 type EditingViewProps = {
   draft: Skill[];
-  onChange: (next: Skill[]) => void;
+  onChange: Dispatch<SetStateAction<Skill[]>>;
 };
 
 function EditingView({ draft, onChange }: EditingViewProps) {
-  const [newSkill, setNewSkill] = useState("");
+  const [newSkill, setNewSkill] = useState<string>("");
 
   return (
     <form className="flex flex-col gap-4">
@@ -30,7 +32,11 @@ function EditingView({ draft, onChange }: EditingViewProps) {
           <IconButton
             icon={Plus}
             text="Add"
-            onClick={() => {}}
+            onClick={() => {
+              if (!newSkill.trim()) return;
+              onChange((prev) => [...prev, { name: newSkill }]);
+              setNewSkill("");
+            }}
             defaultStyle="text-text-secondary"
             hoverStyle="hover:bg-layer-core hover:text-text-primary"
             activeStyle="bg-layer-mantle text-text-secondary"
@@ -38,8 +44,14 @@ function EditingView({ draft, onChange }: EditingViewProps) {
           />
         </div>
         <ul className="flex flex-wrap gap-2">
-          {draft.map((name) => (
-            <IconBadge icon={Edit} name={name.name} onClick={() => {}} />
+          {draft.map((skill, index) => (
+            <IconBadge
+              icon={X}
+              name={skill.name}
+              onClick={() => {
+                onChange((prev) => prev.filter((_, i) => i != index));
+              }}
+            />
           ))}
         </ul>
       </div>
@@ -66,22 +78,69 @@ function DetailsView({ skills }: DefailsViewProps) {
   );
 }
 
-type SkillsProps = {
-  skills: Skill[];
-};
+async function getSkills() {
+  return await invoke<Skill[] | null>("get_skills");
+}
 
-export default function SkillsCard({ skills }: SkillsProps) {
-  const [savedSkills, setSavedSkills] = useState(skills);
-  const [draft, setDraft] = useState(skills);
+async function insertSkills(skills: Skill[]) {
+  return await invoke<void>("insert_skills", { skills });
+}
+
+async function deleteSkills(skills: Skill[]) {
+  return await invoke<void>("delete_skills", { skills });
+}
+export default function SkillsCard() {
+  const [savedSkills, setSavedSkills] = useState<Skill[]>([]);
+  const [draft, setDraft] = useState<Skill[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadSkills() {
+      try {
+        const skills = await getSkills();
+        const initialProfile = skills ?? [];
+
+        setSavedSkills(initialProfile);
+        setDraft(initialProfile);
+      } catch (err) {
+        console.error(err);
+
+        setSavedSkills([]);
+        setDraft([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadSkills();
+  }, []);
+
+  function handleCancel() {
+    setDraft(savedSkills);
+  }
+
+  async function handleSave() {
+    const { toSave, toDelete } = diffArrays(
+      draft,
+      savedSkills,
+      (skill) => skill.name,
+    );
+
+    await insertSkills(toSave);
+    await deleteSkills(toDelete);
+    setSavedSkills(draft);
+  }
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <EditableCard
       view={() => <DetailsView skills={savedSkills} />}
       edit={() => <EditingView draft={draft} onChange={setDraft} />}
-      onSave={() => {
-        setSavedSkills(draft);
-      }}
-      onCancel={() => setDraft(savedSkills)}
+      onSave={handleSave}
+      onCancel={handleCancel}
     />
   );
 }
