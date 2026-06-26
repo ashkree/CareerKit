@@ -1,20 +1,10 @@
-use crate::models::shared::utilities::{deserialize_json_col, query_rows, to_json_string};
-use crate::models::shared::{duration::Duration, location::Location};
-use rusqlite::{params, Connection, Error, Result};
-use serde::{Deserialize, Serialize};
+use crate::features::experience::model::Experience;
+use crate::shared::location::Location;
+use crate::shared::utilities::{deserialize_json_col, query_rows, to_json_string};
+use crate::shared::duration::Duration;
+use rusqlite::{params, Connection, Result};
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
-pub struct Experience {
-    id: Option<i64>,
-    role: String,
-    location: Location,
-    company: String,
-    description: String,
-    highlights: Vec<String>,
-    duration: Duration,
-}
-
-pub fn get_experiences(conn: &Connection) -> Result<Vec<Experience>, Error> {
+pub fn get_experiences(conn: &Connection) -> Result<Vec<Experience>, rusqlite::Error> {
     let sql = "SELECT * FROM experience";
 
     query_rows(conn, sql, params![], |row| {

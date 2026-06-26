@@ -1,12 +1,12 @@
 use crate::database::AppDatabase;
-use crate::models::profile;
+use crate::features::profile::{db, Profile};
 use log::{error, info};
 
 #[tauri::command]
-pub fn get_profile(state: tauri::State<AppDatabase>) -> Result<profile::Profile, String> {
+pub fn get_profile(state: tauri::State<AppDatabase>) -> Result<Profile, String> {
     info!("get_profile called");
     let conn = state.conn.lock().unwrap();
-    let result = profile::get_profile(&conn).map_err(|err| {
+    let result = db::get_profile(&conn).map_err(|err| {
         error!("get_profile failed: {}", err);
         err.to_string()
     });
@@ -19,11 +19,11 @@ pub fn get_profile(state: tauri::State<AppDatabase>) -> Result<profile::Profile,
 #[tauri::command]
 pub fn upsert_profile(
     state: tauri::State<AppDatabase>,
-    profile: profile::Profile,
+    profile: Profile,
 ) -> Result<(), String> {
     info!("upsert_profile called");
     let conn = state.conn.lock().unwrap();
-    match profile::upsert_profile(&conn, profile) {
+    match db::upsert_profile(&conn, profile) {
         Ok(_) => {
             info!("upsert_profile succeeded");
             Ok(())

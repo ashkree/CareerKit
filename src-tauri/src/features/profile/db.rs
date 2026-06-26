@@ -1,30 +1,7 @@
-use crate::models::shared::location::Location;
-use crate::models::shared::utilities::{deserialize_json_col, to_json_string};
+use crate::features::profile::model::{Profile, ProfilePhone};
+use crate::shared::location::Location;
+use crate::shared::utilities::{deserialize_json_col, to_json_string};
 use rusqlite::{params, Connection, Error, Result};
-use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
-struct ProfilePhone {
-    country_code: String,
-    number: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
-struct ProfileLink {
-    name: String,
-    url: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
-pub struct Profile {
-    first_name: String,
-    last_name: String,
-    email: String,
-    phone: ProfilePhone,
-    location: Location,
-    links: Vec<ProfileLink>,
-    languages: Vec<String>,
-}
 
 pub fn get_profile(conn: &Connection) -> Result<Profile, Error> {
     let mut stmt = conn.prepare("SELECT * FROM profile")?;
@@ -85,6 +62,7 @@ pub fn upsert_profile(conn: &Connection, profile: Profile) -> Result<usize, Erro
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::features::profile::model::ProfileLink;
 
     fn setup() -> Connection {
         let conn = Connection::open_in_memory().unwrap();

@@ -1,12 +1,12 @@
 use crate::database::AppDatabase;
-use crate::models::skill;
+use crate::features::skills::{db, Skill};
 use log::{error, info};
 
 #[tauri::command]
-pub fn get_skills(state: tauri::State<AppDatabase>) -> Result<Vec<skill::Skill>, String> {
+pub fn get_skills(state: tauri::State<AppDatabase>) -> Result<Vec<Skill>, String> {
     info!("get_skills called");
     let conn = state.conn.lock().unwrap();
-    let result = skill::get_skills(&conn).map_err(|err| {
+    let result = db::get_skills(&conn).map_err(|err| {
         error!("get_skills failed: {}", err);
         err.to_string()
     });
@@ -19,11 +19,11 @@ pub fn get_skills(state: tauri::State<AppDatabase>) -> Result<Vec<skill::Skill>,
 #[tauri::command]
 pub fn insert_skills(
     state: tauri::State<AppDatabase>,
-    skills: Vec<skill::Skill>,
+    skills: Vec<Skill>,
 ) -> Result<(), String> {
     info!("insert_skills called with {} skills", skills.len());
     let mut conn = state.conn.lock().unwrap();
-    match skill::insert_skills(&mut conn, skills) {
+    match db::insert_skills(&mut conn, skills) {
         Ok(_) => {
             info!("insert_skills succeeded");
             Ok(())
@@ -38,11 +38,11 @@ pub fn insert_skills(
 #[tauri::command]
 pub fn delete_skills(
     state: tauri::State<AppDatabase>,
-    skills: Vec<skill::Skill>,
+    skills: Vec<Skill>,
 ) -> Result<(), String> {
     info!("delete_skills called with {} skills", skills.len());
     let mut conn = state.conn.lock().unwrap();
-    match skill::delete_skills(&mut conn, skills) {
+    match db::delete_skills(&mut conn, skills) {
         Ok(_) => {
             info!("delete_skills succeeded");
             Ok(())

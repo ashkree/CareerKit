@@ -1,12 +1,6 @@
+use crate::features::skills::model::Skill;
+use crate::shared::utilities::query_rows;
 use rusqlite::{params, Connection, Error};
-use serde::{Deserialize, Serialize};
-
-use crate::models::shared::utilities::query_rows;
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
-pub struct Skill {
-    pub name: String,
-}
 
 pub fn get_skill(conn: &Connection, id: i64) -> Result<Skill, Error> {
     let mut stmt = conn.prepare("SELECT * FROM skill WHERE id = ?1")?;

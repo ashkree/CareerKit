@@ -1,7 +1,7 @@
 use crate::database::init_db;
-mod commands;
+mod features;
 pub mod database;
-mod models;
+mod shared;
 mod seed;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -27,15 +27,15 @@ pub fn run() {
         )
         .manage(database::AppDatabase { conn: conn.into() })
         .invoke_handler(tauri::generate_handler![
-            commands::profile::get_profile,
-            commands::profile::upsert_profile,
-            commands::skills::get_skills,
-            commands::skills::insert_skills,
-            commands::skills::delete_skills,
-            commands::experience::get_experiences,
-            commands::experience::insert_experience,
-            commands::experience::update_experience,
-            commands::experience::delete_experience
+            features::profile::get_profile,
+            features::profile::upsert_profile,
+            features::skills::get_skills,
+            features::skills::insert_skills,
+            features::skills::delete_skills,
+            features::experience::get_experiences,
+            features::experience::insert_experience,
+            features::experience::update_experience,
+            features::experience::delete_experience
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
