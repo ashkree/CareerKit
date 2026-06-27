@@ -39,7 +39,11 @@ pub fn run() {
             features::project::get_projects,
             features::project::insert_project,
             features::project::update_project,
-            features::project::delete_project
+            features::project::delete_project,
+            features::education::get_education,
+            features::education::insert_education,
+            features::education::update_education,
+            features::education::delete_education
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
