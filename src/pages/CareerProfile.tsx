@@ -2,6 +2,8 @@ import { type ReactNode } from "react";
 import PersonalDetailsCard from "../features/profile/components/PersonalDetailsCard";
 import SkillsCard from "../features/skills/components/SkillsCard";
 import ExperienceCard from "../features/experience/components/ExperienceCard";
+import ProjectCard from "../features/project/components/ProjectCard";
+import EducationCard from "../features/education/components/EducationCard";
 
 type SectionProps = {
   title: string;
@@ -27,6 +29,8 @@ export default function ProfileForm() {
         <Section title="Personal Details" body={<PersonalDetailsCard />} />
         <Section title="Skills" body={<SkillsCard />} />
         <Section title="Experience" body={<ExperienceCard />} />
+        <Section title="Projects" body={<ProjectCard />} />
+        <Section title="Education" body={<EducationCard />} />
       </div>
     </>
   );

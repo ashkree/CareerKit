@@ -6,4 +6,5 @@ export type Experience = {
   description: string;
   highlights: string[];
   duration: { start_date: string; end_date: string };
+  skills: Array<{ name: string }>;
 };

@@ -1,11 +1,14 @@
+export type Skill = {
+  name: string;
+};
+
 export type Education = {
-  degree: string;
-  field: string;
+  id?: number;
   school: string;
+  qualification: string;
+  specializations: string[];
+  duration: { start_date: string; end_date: string };
   location: { city: string; country: string };
-  relevant_coursework: Array<string>;
-  description: Array<string>;
-  duration: { start: string; end: string; current: boolean };
-  skills: Array<string>;
-  achievements: Array<string>;
+  coursework: string[];
+  skills: Skill[];
 };

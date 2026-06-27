@@ -17,7 +17,13 @@ type EditableCardProps = {
   children: ReactNode;
 };
 
-function EditableCard({ onSave, onCancel, onDelete, defaultEditing = false, children }: EditableCardProps) {
+function EditableCard({
+  onSave,
+  onCancel,
+  onDelete,
+  defaultEditing = false,
+  children,
+}: EditableCardProps) {
   const [isEditing, setIsEditing] = useState(defaultEditing);
 
   return (
@@ -48,7 +54,10 @@ function EditableCard({ onSave, onCancel, onDelete, defaultEditing = false, chil
             <IconButton
               icon={Save}
               text="Save"
-              onClick={onSave}
+              onClick={() => {
+                setIsEditing(false);
+                onSave();
+              }}
               defaultStyle="text-success"
               hoverStyle="hover:bg-success-bg"
             />

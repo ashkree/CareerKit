@@ -1,29 +1,26 @@
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import type { Education } from "../types";
+import type { Project } from "../types";
 import BadgeSection from "../../../shared/components/sections/BadgeSection";
+import LinksSection from "../../../shared/components/sections/LinksSection";
 import EditableCard from "../../../shared/components/cards/EditableCard";
 import TextField from "../../../shared/components/forms/TextField";
 import IconButton from "../../../shared/components/buttons/IconButton";
 import { RemovableBadge } from "../../../shared/components/badges";
 import { updateProp } from "../../../shared/utils/data_updates";
 import {
-  getEducation,
-  insertEducation,
-  updateEducation as updateEducationApi,
-  deleteEducation,
+  getProjects,
+  insertProject,
+  updateProject as updateProjectApi,
+  deleteProject,
 } from "../api";
 
-function BadgeListEditor({
-  items,
+function HighlightsEditor({
+  highlights,
   onChange,
-  placeholder,
-  inputId,
 }: {
-  items: string[];
+  highlights: string[];
   onChange: (next: string[]) => void;
-  placeholder: string;
-  inputId: string;
 }) {
   const [input, setInput] = useState("");
 
@@ -32,9 +29,9 @@ function BadgeListEditor({
       <div className="flex gap-2 items-center">
         <div className="flex-1">
           <TextField
-            id={inputId}
+            id="highlightInput"
             type="text"
-            placeholder={placeholder}
+            placeholder="Implemented feature X"
             value={input}
             onChange={setInput}
           />
@@ -44,7 +41,7 @@ function BadgeListEditor({
           text="Add"
           onClick={() => {
             if (!input.trim()) return;
-            onChange([...items, input.trim()]);
+            onChange([...highlights, input.trim()]);
             setInput("");
           }}
           defaultStyle="text-text-secondary"
@@ -54,12 +51,12 @@ function BadgeListEditor({
         />
       </div>
       <ul className="flex flex-wrap gap-2">
-        {items.map((item, i) => (
+        {highlights.map((h, i) => (
           <RemovableBadge
             key={i}
-            name={item}
+            name={h}
             onClick={() => {
-              onChange(items.filter((_, j) => j !== i));
+              onChange(highlights.filter((_, j) => j !== i));
             }}
           />
         ))}
@@ -68,7 +65,7 @@ function BadgeListEditor({
   );
 }
 
-function EducationItem({
+function ProjectItem({
   draft,
   onChange,
   onSave,
@@ -76,8 +73,8 @@ function EducationItem({
   onDelete,
   defaultEditing,
 }: {
-  draft: Education;
-  onChange: (next: Education) => void;
+  draft: Project;
+  onChange: (next: Project) => void;
   onSave: () => boolean | void | Promise<boolean | void>;
   onCancel: () => void;
   onDelete?: () => void;
@@ -92,66 +89,25 @@ function EducationItem({
     >
       <EditableCard.Section>
         <EditableCard.Section.View>
-          <h3 className="text-text-primary font-bold text-lg">
-            {draft.qualification}
-          </h3>
-          <p className="text-text-secondary">
-            {draft.school} &middot; {draft.location.city},{" "}
-            {draft.location.country}
-          </p>
+          <h3 className="text-text-primary font-bold text-lg">{draft.name}</h3>
+          <p className="text-text-secondary">{draft.status}</p>
         </EditableCard.Section.View>
 
         <EditableCard.Section.Edit>
           <div className="grid grid-cols-2 gap-2">
             <TextField
-              id="schoolField"
-              label="School"
-              value={draft.school}
-              onChange={(value) =>
-                onChange(updateProp(draft, "school", value))
-              }
-              placeholder="University of Technology"
+              id="nameField"
+              label="Name"
+              value={draft.name}
+              onChange={(value) => onChange(updateProp(draft, "name", value))}
+              placeholder="Portfolio Website"
             />
             <TextField
-              id="qualificationField"
-              label="Qualification"
-              value={draft.qualification}
-              onChange={(value) =>
-                onChange(updateProp(draft, "qualification", value))
-              }
-              placeholder="Bachelor of Science"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            <TextField
-              id="cityField"
-              label="City"
-              value={draft.location.city}
-              onChange={(value) =>
-                onChange(
-                  updateProp(
-                    draft,
-                    "location",
-                    updateProp(draft.location, "city", value),
-                  ),
-                )
-              }
-              placeholder="Boston"
-            />
-            <TextField
-              id="countryField"
-              label="Country"
-              value={draft.location.country}
-              onChange={(value) =>
-                onChange(
-                  updateProp(
-                    draft,
-                    "location",
-                    updateProp(draft.location, "country", value),
-                  ),
-                )
-              }
-              placeholder="USA"
+              id="statusField"
+              label="Status"
+              value={draft.status}
+              onChange={(value) => onChange(updateProp(draft, "status", value))}
+              placeholder="Completed"
             />
           </div>
         </EditableCard.Section.Edit>
@@ -179,8 +135,8 @@ function EducationItem({
                   ),
                 )
               }
-              placeholder="2017-09"
-              helperText="e.g. 2017-09"
+              placeholder="2023-01"
+              helperText="e.g. 2023-01"
             />
             <TextField
               id="endDateField"
@@ -195,54 +151,77 @@ function EducationItem({
                   ),
                 )
               }
-              placeholder="2021-06"
-              helperText="e.g. 2021-06"
+              placeholder="2023-06"
+              helperText="e.g. 2023-06"
             />
           </div>
         </EditableCard.Section.Edit>
       </EditableCard.Section>
 
-      <EditableCard.Section title="Specializations">
+      <EditableCard.Section title="Description">
+        <EditableCard.Section.View>
+          <p className="text-text-secondary">{draft.description}</p>
+        </EditableCard.Section.View>
+
+        <EditableCard.Section.Edit>
+          <TextField
+            id="descriptionField"
+            label="Description"
+            value={draft.description}
+            onChange={(value) =>
+              onChange(updateProp(draft, "description", value))
+            }
+            placeholder="Describe the project..."
+          />
+        </EditableCard.Section.Edit>
+      </EditableCard.Section>
+
+      <EditableCard.Section title="Highlights">
         <EditableCard.Section.View>
           <ul className="list-disc list-inside text-text-secondary">
-            {draft.specializations.map((s, i) => (
-              <li key={i}>{s}</li>
+            {draft.highlights.map((h, i) => (
+              <li key={i}>{h}</li>
             ))}
           </ul>
         </EditableCard.Section.View>
 
         <EditableCard.Section.Edit>
-          <BadgeListEditor
-            items={draft.specializations}
-            onChange={(specializations) =>
-              onChange(updateProp(draft, "specializations", specializations))
+          <HighlightsEditor
+            highlights={draft.highlights}
+            onChange={(highlights) =>
+              onChange(updateProp(draft, "highlights", highlights))
             }
-            placeholder="Computer Science"
-            inputId="specializationInput"
           />
         </EditableCard.Section.Edit>
       </EditableCard.Section>
 
-      <EditableCard.Section title="Coursework">
-        <EditableCard.Section.View>
-          <ul className="list-disc list-inside text-text-secondary">
-            {draft.coursework.map((c, i) => (
-              <li key={i}>{c}</li>
-            ))}
-          </ul>
-        </EditableCard.Section.View>
-
-        <EditableCard.Section.Edit>
-          <BadgeListEditor
-            items={draft.coursework}
-            onChange={(coursework) =>
-              onChange(updateProp(draft, "coursework", coursework))
-            }
-            placeholder="Data Structures"
-            inputId="courseworkInput"
-          />
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+      <LinksSection
+        title="Links"
+        links={draft.links}
+        onAddLink={() =>
+          onChange(
+            updateProp(draft, "links", [
+              ...draft.links,
+              { name: "", url: "" },
+            ]),
+          )
+        }
+        onUpdateLink={(index, link) => {
+          const updated = draft.links.map((l, i) =>
+            i === index ? link : l,
+          );
+          onChange(updateProp(draft, "links", updated));
+        }}
+        onRemoveLink={(index) =>
+          onChange(
+            updateProp(
+              draft,
+              "links",
+              draft.links.filter((_, i) => i !== index),
+            ),
+          )
+        }
+      />
 
       <BadgeSection
         fieldId="skillInput"
@@ -257,86 +236,86 @@ function EducationItem({
   );
 }
 
-const emptyEducation = (): Education => ({
-  school: "",
-  qualification: "",
-  specializations: [],
+const emptyProject = (): Project => ({
+  name: "",
+  description: "",
+  status: "",
+  highlights: [],
   duration: { start_date: "", end_date: "" },
-  location: { city: "", country: "" },
-  coursework: [],
+  links: [],
   skills: [],
 });
 
-export default function EducationCard() {
-  const [savedEducation, setSavedEducation] = useState<Education[]>([]);
-  const [draft, setDraft] = useState<Education[]>([]);
+export default function ProjectCard() {
+  const [savedProjects, setSavedProjects] = useState<Project[]>([]);
+  const [draft, setDraft] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadEducation();
+    loadProjects();
   }, []);
 
-  async function loadEducation() {
+  async function loadProjects() {
     try {
-      const entries = await getEducation();
-      const initial = entries ?? [];
-      setSavedEducation(initial);
+      const projects = await getProjects();
+      const initial = projects ?? [];
+      setSavedProjects(initial);
       setDraft(initial);
     } catch (err) {
       console.error(err);
-      setSavedEducation([]);
+      setSavedProjects([]);
       setDraft([]);
     } finally {
       setLoading(false);
     }
   }
 
-  function addEducation() {
-    setDraft([...draft, emptyEducation()]);
+  function addProject() {
+    setDraft([...draft, emptyProject()]);
   }
 
-  function updateEducationItem(index: number, updated: Education) {
+  function updateProjectItem(index: number, updated: Project) {
     const next = [...draft];
     next[index] = updated;
     setDraft(next);
   }
 
-  function removeEducationItem(index: number) {
+  function removeProjectItem(index: number) {
     setDraft(draft.filter((_, i) => i !== index));
   }
 
   function handleSave(index: number) {
     return async () => {
-      const entry = draft[index];
-      if (entry.id === undefined) {
-        await insertEducation(entry);
+      const proj = draft[index];
+      if (proj.id === undefined) {
+        await insertProject(proj);
       } else {
-        await updateEducationApi(entry, entry.id);
+        await updateProjectApi(proj, proj.id);
       }
-      await loadEducation();
+      await loadProjects();
     };
   }
 
   function handleCancel(index: number) {
     return () => {
-      const saved = savedEducation.find((e) => e.id === draft[index]?.id);
+      const saved = savedProjects.find((p) => p.id === draft[index]?.id);
       if (saved) {
-        updateEducationItem(index, { ...saved });
+        updateProjectItem(index, { ...saved });
       } else {
-        removeEducationItem(index);
+        removeProjectItem(index);
       }
     };
   }
 
   function handleDelete(index: number) {
     return async () => {
-      const entry = draft[index];
-      if (entry.id !== undefined) {
-        await deleteEducation(entry.id);
+      const proj = draft[index];
+      if (proj.id !== undefined) {
+        await deleteProject(proj.id);
       }
-      removeEducationItem(index);
-      setSavedEducation(
-        savedEducation.filter((e) => e.id !== entry.id),
+      removeProjectItem(index);
+      setSavedProjects(
+        savedProjects.filter((p) => p.id !== proj.id),
       );
     };
   }
@@ -349,26 +328,24 @@ export default function EducationCard() {
     <div className="flex flex-col gap-4">
       <IconButton
         icon={Plus}
-        text="Add Education"
-        onClick={addEducation}
+        text="Add Project"
+        onClick={addProject}
         defaultStyle="text-brand-600 border border-border-subtle rounded-lg py-2 px-4"
         hoverStyle="hover:bg-layer-mantle"
       />
 
       {draft.length === 0 ? (
-        <p className="text-text-secondary">No education added yet.</p>
+        <p className="text-text-secondary">No projects added yet.</p>
       ) : (
-        draft.map((entry, index) => (
-          <EducationItem
-            key={entry.id ?? `new-${index}`}
-            draft={entry}
-            onChange={(updated) => updateEducationItem(index, updated)}
+        draft.map((proj, index) => (
+          <ProjectItem
+            key={proj.id ?? `new-${index}`}
+            draft={proj}
+            onChange={(updated) => updateProjectItem(index, updated)}
             onSave={handleSave(index)}
             onCancel={handleCancel(index)}
-            onDelete={
-              entry.id !== undefined ? handleDelete(index) : undefined
-            }
-            defaultEditing={entry.id === undefined}
+            onDelete={proj.id !== undefined ? handleDelete(index) : undefined}
+            defaultEditing={proj.id === undefined}
           />
         ))
       )}

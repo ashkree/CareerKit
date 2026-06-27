@@ -5,6 +5,7 @@ import EditableCard from "../../../shared/components/cards/EditableCard";
 import TextField from "../../../shared/components/forms/TextField";
 import IconButton from "../../../shared/components/buttons/IconButton";
 import { RemovableBadge } from "../../../shared/components/badges";
+import BadgeSection from "../../../shared/components/sections/BadgeSection";
 import { updateProp } from "../../../shared/utils/data_updates";
 import {
   getExperiences,
@@ -106,7 +107,9 @@ function ExperienceItem({
               id="companyField"
               label="Company"
               value={draft.company}
-              onChange={(value) => onChange(updateProp(draft, "company", value))}
+              onChange={(value) =>
+                onChange(updateProp(draft, "company", value))
+              }
               placeholder="Acme Corp"
             />
           </div>
@@ -200,7 +203,9 @@ function ExperienceItem({
             id="descriptionField"
             label="Description"
             value={draft.description}
-            onChange={(value) => onChange(updateProp(draft, "description", value))}
+            onChange={(value) =>
+              onChange(updateProp(draft, "description", value))
+            }
             placeholder="Describe your responsibilities and achievements..."
           />
         </EditableCard.Section.Edit>
@@ -224,6 +229,16 @@ function ExperienceItem({
           />
         </EditableCard.Section.Edit>
       </EditableCard.Section>
+
+      <BadgeSection
+        fieldId="skillInput"
+        title="Skills"
+        placeholder="Skill"
+        arr={draft.skills}
+        getLabel={(skill: { name: string }) => skill.name}
+        onAddBadge={(value) => onChange(updateProp(draft, "skills", [...draft.skills, { name: value }]))}
+        onRemoveBadge={(index) => onChange(updateProp(draft, "skills", draft.skills.filter((_, i) => i !== index)))}
+      />
     </EditableCard>
   );
 }
@@ -235,6 +250,7 @@ const emptyExperience = (): Experience => ({
   description: "",
   highlights: [],
   duration: { start_date: "", end_date: "" },
+  skills: [],
 });
 
 export default function ExperienceCard() {
@@ -305,9 +321,7 @@ export default function ExperienceCard() {
         await deleteExperience(exp.id);
       }
       removeExperienceItem(index);
-      setSavedExperiences(
-        savedExperiences.filter((e) => e.id !== exp.id),
-      );
+      setSavedExperiences(savedExperiences.filter((e) => e.id !== exp.id));
     };
   }
 

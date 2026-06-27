@@ -1,16 +1,17 @@
 import { temp_profile, type Profile } from "../types";
-import { MapPin, Phone, Mail, Plus, Trash } from "lucide-react";
+import { MapPin, Phone, Mail, Plus } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import TextField from "../../../shared/components/forms/TextField";
 import IconText from "../../../shared/components/IconText";
 import IconButton from "../../../shared/components/buttons/IconButton";
 import EditableCard from "../../../shared/components/cards/EditableCard";
-import { Badge, RemovableBadge } from "../../../shared/components/badges";
+import LinksSection from "../../../shared/components/sections/LinksSection";
 import { updateProp } from "../../../shared/utils/data_updates";
 import { getCountries, getCountryCallingCode } from "react-phone-number-input";
 import Dropdown from "../../../shared/components/forms/Dropdown";
 import type { DropdownOption } from "../../../shared/components/forms/Dropdown";
 import { getProfile, upsertProfile } from "../api";
+import BadgeSection from "../../../shared/components/sections/BadgeSection";
 
 function NameSection({
   draft,
@@ -182,183 +183,6 @@ function ContactSection({
   );
 }
 
-function LinksSection({
-  draft,
-  onChange,
-}: {
-  draft: Profile;
-  onChange: Dispatch<SetStateAction<Profile>>;
-}) {
-  return (
-    <EditableCard.Section title="Your Links">
-      <EditableCard.Section.View>
-        <ul>
-          {draft.links.map((link) => (
-            <li key={link.name}>
-              <p className="flex gap-2">
-                <span className="font-bold">{link.name}:</span>
-                <a href={link.url} target="_blank" rel="noreferrer">
-                  {link.url}
-                </a>
-              </p>
-            </li>
-          ))}
-        </ul>
-      </EditableCard.Section.View>
-
-      <EditableCard.Section.Edit>
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-text-primary">
-              Your Links
-            </span>
-            <IconButton
-              icon={Plus}
-              text="Add"
-              onClick={() => {
-                onChange(
-                  updateProp(draft, "links", [
-                    ...draft.links,
-                    { name: "", url: "" },
-                  ]),
-                );
-              }}
-              defaultStyle="text-text-secondary"
-              hoverStyle="hover:bg-layer-core hover:text-text-primary"
-              activeStyle="bg-layer-mantle text-text-secondary"
-              activeDuration={200}
-            />
-          </div>
-
-          {draft.links.map((link, index) => (
-            <div key={index} className="flex items-end gap-3">
-              <div className="w-40">
-                <TextField
-                  id={`link-name-${index}`}
-                  value={link.name}
-                  onChange={(value) => {
-                    const updated = draft.links.map((l, i) =>
-                      i === index ? { ...l, name: value } : l,
-                    );
-                    onChange(updateProp(draft, "links", updated));
-                  }}
-                  type="text"
-                  placeholder="LinkedIn"
-                />
-              </div>
-              <div className="h-9 py-1 text-text-secondary">:</div>
-              <div className="flex-1">
-                <TextField
-                  id={`link-url-${index}`}
-                  value={link.url}
-                  onChange={(value) => {
-                    const updated = draft.links.map((l, i) =>
-                      i === index ? { ...l, url: value } : l,
-                    );
-                    onChange(updateProp(draft, "links", updated));
-                  }}
-                  type="text"
-                  placeholder="https://linkedin.com/in/..."
-                />
-              </div>
-              <div className="w-8 h-9 text-xl flex items-center justify-center">
-                <IconButton
-                  icon={Trash}
-                  ariaLabel={`Remove ${link.name || "link"} link`}
-                  onClick={() => {
-                    onChange(
-                      updateProp(
-                        draft,
-                        "links",
-                        draft.links.filter((_, i) => i !== index),
-                      ),
-                    );
-                  }}
-                  defaultStyle="text-text-secondary"
-                  hoverStyle="hover:bg-danger-bg hover:text-danger"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </EditableCard.Section.Edit>
-    </EditableCard.Section>
-  );
-}
-
-function LanguagesSection({
-  draft,
-  onChange,
-}: {
-  draft: Profile;
-  onChange: Dispatch<SetStateAction<Profile>>;
-}) {
-  const [newLanguage, setNewLanguage] = useState("");
-
-  return (
-    <EditableCard.Section title="Your Languages">
-      <EditableCard.Section.View>
-        <ul className="flex gap-2">
-          {draft.languages.map((language) => (
-            <Badge name={language} />
-          ))}
-        </ul>
-      </EditableCard.Section.View>
-
-      <EditableCard.Section.Edit>
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2 items-center">
-            <div className="flex-1">
-              <TextField
-                id="languageInput"
-                label="Languages"
-                type="text"
-                placeholder="English"
-                value={newLanguage}
-                onChange={setNewLanguage}
-              />
-            </div>
-            <IconButton
-              icon={Plus}
-              text="Add"
-              onClick={() => {
-                if (!newLanguage.trim()) return;
-                onChange(
-                  updateProp(draft, "languages", [
-                    ...draft.languages,
-                    newLanguage.trim(),
-                  ]),
-                );
-                setNewLanguage("");
-              }}
-              defaultStyle="text-text-secondary"
-              hoverStyle="hover:bg-layer-core hover:text-text-primary"
-              activeStyle="bg-layer-mantle text-text-secondary"
-              activeDuration={200}
-            />
-          </div>
-          <ul className="flex gap-2">
-            {draft.languages.map((language, index) => (
-              <RemovableBadge
-                name={language}
-                onClick={() => {
-                  onChange(
-                    updateProp(
-                      draft,
-                      "languages",
-                      draft.languages.filter((_, i) => i !== index),
-                    ),
-                  );
-                }}
-              />
-            ))}
-          </ul>
-        </div>
-      </EditableCard.Section.Edit>
-    </EditableCard.Section>
-  );
-}
-
 export default function PersonalDetailsCard() {
   const [savedProfile, setSavedProfile] = useState<Profile>(temp_profile);
   const [draft, setDraft] = useState<Profile>(temp_profile);
@@ -434,8 +258,52 @@ export default function PersonalDetailsCard() {
     >
       <NameSection draft={draft} onChange={setDraft} />
       <ContactSection draft={draft} onChange={setDraft} />
-      <LinksSection draft={draft} onChange={setDraft} />
-      <LanguagesSection draft={draft} onChange={setDraft} />
+      <LinksSection
+        title="Your Links"
+        links={draft.links}
+        onAddLink={() =>
+          setDraft(
+            updateProp(draft, "links", [
+              ...draft.links,
+              { name: "", url: "" },
+            ]),
+          )
+        }
+        onUpdateLink={(index, link) => {
+          const updated = draft.links.map((l, i) =>
+            i === index ? link : l,
+          );
+          setDraft(updateProp(draft, "links", updated));
+        }}
+        onRemoveLink={(index) =>
+          setDraft(
+            updateProp(
+              draft,
+              "links",
+              draft.links.filter((_, i) => i !== index),
+            ),
+          )
+        }
+      />
+      <BadgeSection
+        fieldId="languageInput"
+        title="Your Languages"
+        placeholder="English"
+        arr={draft.languages}
+        getLabel={(lang) => lang}
+        onAddBadge={(value) =>
+          setDraft(updateProp(draft, "languages", [...draft.languages, value]))
+        }
+        onRemoveBadge={(index) =>
+          setDraft(
+            updateProp(
+              draft,
+              "languages",
+              draft.languages.filter((_, i) => i !== index),
+            ),
+          )
+        }
+      />
     </EditableCard>
   );
 }
