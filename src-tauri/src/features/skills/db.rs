@@ -2,15 +2,6 @@ use crate::features::skills::model::Skill;
 use crate::shared::utilities::query_rows;
 use rusqlite::{params, Connection, Error};
 
-pub fn get_skill(conn: &Connection, id: i64) -> Result<Skill, Error> {
-    let mut stmt = conn.prepare("SELECT * FROM skill WHERE id = ?1")?;
-    stmt.query_one([id], |row| {
-        Ok(Skill {
-            name: row.get("name")?,
-        })
-    })
-}
-
 pub fn get_skills(conn: &Connection) -> Result<Vec<Skill>, Error> {
     let sql = "SELECT * FROM skill";
 
@@ -101,21 +92,6 @@ mod tests {
     }
 
     #[test]
-    fn test_get_skill() {
-        let mut conn = setup();
-        insert_skills(
-            &mut conn,
-            vec![Skill {
-                name: "Flipping Burgers".to_string(),
-            }],
-        )
-        .unwrap();
-
-        let stored = get_skill(&conn, 1).unwrap();
-        assert_eq!(stored.name, "Flipping Burgers");
-    }
-
-    #[test]
     fn test_delete_skills() {
         let mut conn = setup();
         let skills = seed_data();
@@ -124,12 +100,5 @@ mod tests {
         delete_skills(&mut conn, skills[2..4].to_vec()).unwrap();
         let stored = get_skills(&conn).unwrap();
         assert_eq!(stored.len(), 2);
-    }
-
-    #[test]
-    fn test_get_skill_not_found() {
-        let conn = setup();
-        let result = get_skill(&conn, 999);
-        assert!(result.is_err());
     }
 }

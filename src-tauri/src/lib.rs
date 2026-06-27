@@ -35,7 +35,11 @@ pub fn run() {
             features::experience::get_experiences,
             features::experience::insert_experience,
             features::experience::update_experience,
-            features::experience::delete_experience
+            features::experience::delete_experience,
+            features::project::get_projects,
+            features::project::insert_project,
+            features::project::update_project,
+            features::project::delete_project
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
