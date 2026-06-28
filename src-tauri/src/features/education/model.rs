@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{features::skills::Skill, shared::{duration::Duration, location::Location}};
+use crate::{
+    features::skills::Skill,
+    shared::{duration::Duration, location::Location},
+};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct Education {

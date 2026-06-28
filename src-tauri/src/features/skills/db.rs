@@ -92,6 +92,25 @@ mod tests {
     }
 
     #[test]
+    fn test_insert_skills_empty() {
+        let mut conn = setup();
+        insert_skills(&mut conn, vec![]).unwrap();
+
+        let stored = get_skills(&conn).unwrap();
+        assert!(stored.is_empty());
+    }
+
+    #[test]
+    fn test_delete_skills_not_found() {
+        let mut conn = setup();
+        let skills = vec![Skill {
+            name: "NonExistent".to_string(),
+        }];
+        let result = delete_skills(&mut conn, skills);
+        assert!(result.is_ok());
+    }
+
+    #[test]
     fn test_delete_skills() {
         let mut conn = setup();
         let skills = seed_data();

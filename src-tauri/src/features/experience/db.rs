@@ -267,6 +267,13 @@ mod tests {
     }
 
     #[test]
+    fn test_delete_experience_not_found() {
+        let conn = setup();
+        let rows_affected = delete_experience(&conn, 999).unwrap();
+        assert_eq!(rows_affected, 0);
+    }
+
+    #[test]
     fn test_update_experience_skills_empty() {
         let conn = setup();
         insert_experience(&conn, seed_data()[0].clone()).unwrap();

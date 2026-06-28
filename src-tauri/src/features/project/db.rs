@@ -8,7 +8,7 @@ const JUNCTION_TABLE: &str = "project_skill";
 const FK_COLUMN: &str = "project_id";
 
 pub fn get_projects(conn: &Connection) -> rusqlite::Result<Vec<Project>> {
-    let sql = "SELECT * FROM projects";
+    let sql = "SELECT * FROM project";
 
     let mut projects = query_rows(conn, sql, params![], |row| {
         Ok(Project {
@@ -40,7 +40,7 @@ pub fn insert_project(conn: &Connection, project: Project) -> rusqlite::Result<u
     let links_json = to_json_string(&project.links)?;
 
     conn.execute(
-        "INSERT INTO projects (name, description, status, highlights, start_date, end_date, links)
+        "INSERT INTO project (name, description, status, highlights, start_date, end_date, links)
          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
         params![
             &project.name,
@@ -68,7 +68,7 @@ pub fn update_project(
     let links_json = to_json_string(&project.links)?;
 
     let row_count = conn.execute(
-        "UPDATE projects SET
+        "UPDATE project SET
             name        = ?1,
             description = ?2,
             status      = ?3,
@@ -95,7 +95,7 @@ pub fn update_project(
 }
 
 pub fn delete_project(conn: &Connection, proj_id: i64) -> rusqlite::Result<usize> {
-    conn.execute("DELETE FROM projects WHERE id = ?1", params![proj_id])
+    conn.execute("DELETE FROM project WHERE id = ?1", params![proj_id])
 }
 
 #[cfg(test)]
@@ -117,7 +117,7 @@ mod tests {
                 skill_id   INTEGER NOT NULL,
                 PRIMARY KEY (project_id, skill_id)
             );
-            CREATE TABLE IF NOT EXISTS projects (
+            CREATE TABLE IF NOT EXISTS project (
                 id          INTEGER PRIMARY KEY,
                 name        TEXT,
                 description TEXT,
@@ -249,6 +249,13 @@ mod tests {
 
         let stored = get_projects(&conn).unwrap();
         assert_eq!(stored[0].skills, vec![Skill { name: "Go".to_string() }]);
+    }
+
+    #[test]
+    fn test_delete_project_not_found() {
+        let conn = setup();
+        let rows_affected = delete_project(&conn, 999).unwrap();
+        assert_eq!(rows_affected, 0);
     }
 
     #[test]

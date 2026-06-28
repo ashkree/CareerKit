@@ -30,5 +30,3 @@ pub fn deserialize_json_col<T: serde::de::DeserializeOwned>(
 pub fn to_json_string<T: serde::Serialize>(value: &T) -> rusqlite::Result<String> {
     serde_json::to_string(value).map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))
 }
-
-

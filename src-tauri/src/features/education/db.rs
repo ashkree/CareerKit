@@ -269,6 +269,13 @@ mod tests {
     }
 
     #[test]
+    fn test_delete_education_not_found() {
+        let conn = setup();
+        let rows_affected = delete_education(&conn, 999).unwrap();
+        assert_eq!(rows_affected, 0);
+    }
+
+    #[test]
     fn test_update_education_skills_empty() {
         let conn = setup();
         insert_education(&conn, seed_data()[0].clone()).unwrap();

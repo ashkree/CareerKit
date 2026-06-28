@@ -150,6 +150,20 @@ mod tests {
     }
 
     #[test]
+    fn test_upsert_profile_empty_links_languages() {
+        let conn = setup();
+        let mut profile = seed_data();
+        profile.links = vec![];
+        profile.languages = vec![];
+
+        upsert_profile(&conn, profile.clone()).unwrap();
+        let stored = get_profile(&conn).unwrap();
+
+        assert!(stored.links.is_empty());
+        assert!(stored.languages.is_empty());
+    }
+
+    #[test]
     fn test_update_profile_does_not_create_duplicate() {
         let conn = setup();
         upsert_profile(&conn, seed_data()).unwrap();

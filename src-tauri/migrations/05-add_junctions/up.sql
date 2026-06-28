@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS project_skill (
-    project_id INTEGER NOT NULL REFERENCES projects (id) ON DELETE CASCADE,
+    project_id INTEGER NOT NULL REFERENCES project (id) ON DELETE CASCADE,
     skill_id INTEGER NOT NULL REFERENCES skill (id) ON DELETE CASCADE,
     PRIMARY KEY (project_id, skill_id)
 );
