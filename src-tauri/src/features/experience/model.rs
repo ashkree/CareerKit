@@ -1,4 +1,7 @@
-use crate::shared::{duration::Duration, location::Location};
+use crate::{
+    features::skills::Skill,
+    shared::{duration::Duration, location::Location},
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
@@ -10,4 +13,5 @@ pub struct Experience {
     pub description: String,
     pub highlights: Vec<String>,
     pub duration: Duration,
+    pub skills: Vec<Skill>,
 }
