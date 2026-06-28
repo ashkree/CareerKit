@@ -43,7 +43,12 @@ pub fn run() {
             features::education::get_education,
             features::education::insert_education,
             features::education::update_education,
-            features::education::delete_education
+            features::education::delete_education,
+            features::application::get_applications,
+            features::application::get_application,
+            features::application::insert_application,
+            features::application::update_application,
+            features::application::delete_application
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

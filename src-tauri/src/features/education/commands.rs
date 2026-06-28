@@ -56,10 +56,7 @@ pub fn update_education(
 }
 
 #[tauri::command]
-pub fn delete_education(
-    state: tauri::State<AppDatabase>,
-    edu_id: i64,
-) -> Result<(), String> {
+pub fn delete_education(state: tauri::State<AppDatabase>, edu_id: i64) -> Result<(), String> {
     info!("delete_education called for id {}", edu_id);
     let conn = state.conn.lock().unwrap();
     match db::delete_education(&conn, edu_id) {
