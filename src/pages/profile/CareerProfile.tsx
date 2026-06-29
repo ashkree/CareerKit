@@ -24,7 +24,6 @@ function Section({ id, title, body }: SectionProps) {
 
 export default function CareerProfile() {
   const location = useLocation();
-
   useEffect(() => {
     const scrollTo = location.state?.scrollTo;
     if (!scrollTo) return;

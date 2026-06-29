@@ -86,6 +86,7 @@ function ProjectItem({
       onCancel={onCancel}
       onDelete={onDelete}
       defaultEditing={defaultEditing}
+      saveDisabled={!draft.name}
     >
       <Card.Section>
         <Card.Section.View>

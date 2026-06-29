@@ -89,6 +89,7 @@ function EducationItem({
       onCancel={onCancel}
       onDelete={onDelete}
       defaultEditing={defaultEditing}
+      saveDisabled={!draft.school || !draft.qualification}
     >
       <Card.Section>
         <Card.Section.View>

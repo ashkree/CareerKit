@@ -2,7 +2,7 @@ import CareerProfile from "./pages/profile/CareerProfile.tsx";
 import Sidebar from "./layout/Sidebar.tsx";
 import { Routes, Route, BrowserRouter } from "react-router";
 import ApplicationDashboard from "./pages/applications/ApplicationDashboard.tsx";
-import ApplicationForm from "./pages/applications/ApplicationForm.tsx";
+import ApplicationForm from "./features/application/components/ApplicationForm.tsx";
 
 export default function App() {
   return (

@@ -251,7 +251,12 @@ export default function PersonalDetailsCard() {
   }
 
   return (
-    <Card defaultEditing={creating} onSave={handleSave} onCancel={handleCancel}>
+    <Card
+      defaultEditing={creating}
+      onSave={handleSave}
+      onCancel={handleCancel}
+      saveDisabled={!draft.first_name || !draft.last_name}
+    >
       <NameSection draft={draft} onChange={setDraft} />
       <ContactSection draft={draft} onChange={setDraft} />
       <LinksSection

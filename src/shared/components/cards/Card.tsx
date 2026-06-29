@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import IconButton from "../buttons/IconButton";
+import IconText from "../IconText";
 import { Save, SquarePen, Trash, X } from "lucide-react";
 
 type CardContextType = {
@@ -15,6 +16,7 @@ type CardProps = {
   onDelete?: () => void;
   defaultEditing?: boolean;
   variant?: "editable" | "form";
+  saveDisabled?: boolean;
   children: ReactNode;
 };
 
@@ -24,6 +26,7 @@ function Card({
   onDelete,
   defaultEditing = false,
   variant = "editable",
+  saveDisabled,
   children,
 }: CardProps) {
   const [isEditing, setIsEditing] = useState(defaultEditing);
@@ -38,15 +41,24 @@ function Card({
         {children}
         {variant === "form" ? (
           <div className="flex items-center justify-end gap-2">
-            <IconButton
-              icon={Save}
-              text="Save"
-              onClick={() => {
-                onSave();
-              }}
-              defaultStyle="text-success"
-              hoverStyle="hover:bg-success-bg"
-            />
+            {saveDisabled ? (
+              <span
+                className="flex items-center gap-2 p-1.5 rounded-md opacity-40 cursor-not-allowed select-none"
+                style={{ color: "var(--color-success)" }}
+              >
+                <IconText icon={Save} text="Save" />
+              </span>
+            ) : (
+              <IconButton
+                icon={Save}
+                text="Save"
+                onClick={() => {
+                  onSave();
+                }}
+                defaultStyle="text-success"
+                hoverStyle="hover:bg-success-bg"
+              />
+            )}
           </div>
         ) : effectiveIsEditing ? (
           <div className="flex items-center justify-end gap-2">
@@ -69,16 +81,25 @@ function Card({
               defaultStyle="text-text-secondary"
               hoverStyle="hover:bg-layer-mantle hover:text-text-primary"
             />
-            <IconButton
-              icon={Save}
-              text="Save"
-              onClick={() => {
-                setIsEditing(false);
-                onSave();
-              }}
-              defaultStyle="text-success"
-              hoverStyle="hover:bg-success-bg"
-            />
+            {saveDisabled ? (
+              <span
+                className="flex items-center gap-2 p-1.5 rounded-md opacity-40 cursor-not-allowed select-none"
+                style={{ color: "var(--color-success)" }}
+              >
+                <IconText icon={Save} text="Save" />
+              </span>
+            ) : (
+              <IconButton
+                icon={Save}
+                text="Save"
+                onClick={() => {
+                  setIsEditing(false);
+                  onSave();
+                }}
+                defaultStyle="text-success"
+                hoverStyle="hover:bg-success-bg"
+              />
+            )}
           </div>
         ) : (
           <div className="absolute top-4 right-4">

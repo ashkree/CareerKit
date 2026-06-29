@@ -84,6 +84,7 @@ function ExperienceItem({
       onCancel={onCancel}
       onDelete={onDelete}
       defaultEditing={defaultEditing}
+      saveDisabled={!draft.role || !draft.company}
     >
       <Card.Section>
         <Card.Section.View>
