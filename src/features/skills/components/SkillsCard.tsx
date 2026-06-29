@@ -55,7 +55,6 @@ export default function SkillsCard() {
     <Card onSave={handleSave} onCancel={handleCancel}>
       <BadgeSection
         fieldId="skillInput"
-        title="Skills"
         placeholder="Skill"
         arr={draft}
         getLabel={(skill: Skill) => skill.name}

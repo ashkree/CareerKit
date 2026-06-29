@@ -88,7 +88,7 @@ function ExperienceItem({
     >
       <Card.Section>
         <Card.Section.View>
-          <h3 className="text-text-primary font-bold text-lg">{draft.role}</h3>
+          <h3 className="text-text-primary font-bold text-xl">{draft.role}</h3>
           <p className="text-text-secondary">
             {draft.company} &middot; {draft.location.city},{" "}
             {draft.location.country}

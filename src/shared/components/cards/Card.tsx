@@ -125,7 +125,7 @@ function Section({ title, children }: SectionProps) {
   return (
     <div className="border-b border-border-subtle pb-3">
       {title && (
-        <h3 className="text-text-secondary font-bold text-md pb-2">{title}</h3>
+        <h4 className="text-text-secondary font-bold text-lg pb-2">{title}</h4>
       )}
       {children}
     </div>

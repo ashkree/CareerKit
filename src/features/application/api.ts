@@ -6,11 +6,11 @@ export async function getApplications() {
 }
 
 export async function getApplication(id: number) {
-  return await invoke<Application[] | null>("get_application", { id });
+  return await invoke<Application | null>("get_application", { id });
 }
 
 export async function insertApplication(application: Application) {
-  return await invoke<void>("insert_application", { application });
+  return await invoke<number>("insert_application", { application });
 }
 
 export async function updateApplication(id: number, application: Application) {
@@ -18,5 +18,5 @@ export async function updateApplication(id: number, application: Application) {
 }
 
 export async function deleteApplication(id: number) {
-  return await invoke<Application[] | null>("delete_application", { id });
+  return await invoke<void>("delete_application", { id });
 }

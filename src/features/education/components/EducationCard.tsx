@@ -93,7 +93,7 @@ function EducationItem({
     >
       <Card.Section>
         <Card.Section.View>
-          <h3 className="text-text-primary font-bold text-lg">
+          <h3 className="text-text-primary font-bold text-xl">
             {draft.qualification}
           </h3>
           <p className="text-text-secondary">

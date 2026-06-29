@@ -4,9 +4,11 @@ import TextArea from "../../../shared/components/forms/TextArea";
 import TextField from "../../../shared/components/forms/TextField";
 import Dropdown from "../../../shared/components/forms/Dropdown";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { insertApplication } from "../api";
 
 export default function ApplicationForm() {
+  const navigate = useNavigate();
   const [jobTitle, setJobTitle] = useState("");
   const [jobUrl, setJobUrl] = useState("");
   const [description, setDescription] = useState("");
@@ -21,7 +23,7 @@ export default function ApplicationForm() {
   const today = new Date().toISOString().split("T")[0];
 
   async function handleSave() {
-    await insertApplication({
+    const id = await insertApplication({
       job_title: jobTitle,
       job_url: jobUrl,
       company,
@@ -34,6 +36,7 @@ export default function ApplicationForm() {
       contact_email: contactEmail,
       contact_linkedin_url: contactLinkedinUrl,
     });
+    navigate(`/applications/${id}`);
   }
 
   return (

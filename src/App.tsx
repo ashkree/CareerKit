@@ -3,6 +3,7 @@ import Sidebar from "./layout/Sidebar.tsx";
 import { Routes, Route, BrowserRouter } from "react-router";
 import ApplicationDashboard from "./pages/applications/ApplicationDashboard.tsx";
 import ApplicationForm from "./features/application/components/ApplicationForm.tsx";
+import ApplicationDetail from "./features/application/components/ApplicationDetail.tsx";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
               <Route path="/applications">
                 <Route index element={<ApplicationDashboard />} />
                 <Route path="new" element={<ApplicationForm />} />
+                <Route path=":id" element={<ApplicationDetail />} />
               </Route>
             </Routes>
           </div>

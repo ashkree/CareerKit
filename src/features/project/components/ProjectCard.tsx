@@ -90,7 +90,7 @@ function ProjectItem({
     >
       <Card.Section>
         <Card.Section.View>
-          <h3 className="text-text-primary font-bold text-lg">{draft.name}</h3>
+          <h3 className="text-text-primary font-bold text-xl">{draft.name}</h3>
           <p className="text-text-secondary">{draft.status}</p>
         </Card.Section.View>
 

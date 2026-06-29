@@ -9,7 +9,7 @@ import IconButton from "../buttons/IconButton";
 type BadgeSectionProps<T> = {
   fieldId: string;
   placeholder: string;
-  title: string;
+  title?: string;
   arr: T[];
   getLabel: (item: T) => string;
   onAddBadge: (value: string) => void;

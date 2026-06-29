@@ -1,11 +1,11 @@
+import { ReactNode, useEffect } from "react";
+import { useLocation } from "react-router";
 import PersonalDetailsCard from "../../features/profile/components/PersonalDetailsCard";
 import SkillsCard from "../../features/skills/components/SkillsCard";
 import ExperienceCard from "../../features/experience/components/ExperienceCard";
 import ProjectCard from "../../features/project/components/ProjectCard";
 import EducationCard from "../../features/education/components/EducationCard";
 import SectionHeader from "../../shared/components/sections/SectionHeader";
-import { ReactNode, useEffect } from "react";
-import { useLocation } from "react-router";
 
 type SectionProps = {
   id: string;
@@ -16,7 +16,7 @@ type SectionProps = {
 function Section({ id, title, body }: SectionProps) {
   return (
     <div id={id} className="flex flex-col gap-2">
-      <h2 className="text-md text-text-secondary font-bold">{title}</h2>
+      <h2 className="text-2xl text-text-secondary font-bold">{title}</h2>
       {body}
     </div>
   );
@@ -24,6 +24,7 @@ function Section({ id, title, body }: SectionProps) {
 
 export default function CareerProfile() {
   const location = useLocation();
+
   useEffect(() => {
     const scrollTo = location.state?.scrollTo;
     if (!scrollTo) return;
