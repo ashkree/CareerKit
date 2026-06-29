@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import type { Experience } from "../types";
-import EditableCard from "../../../shared/components/cards/EditableCard";
+import Card from "../../../shared/components/cards/Card";
 import TextField from "../../../shared/components/forms/TextField";
 import IconButton from "../../../shared/components/buttons/IconButton";
 import { RemovableBadge } from "../../../shared/components/badges";
@@ -79,22 +79,22 @@ function ExperienceItem({
   defaultEditing?: boolean;
 }) {
   return (
-    <EditableCard
+    <Card
       onSave={onSave}
       onCancel={onCancel}
       onDelete={onDelete}
       defaultEditing={defaultEditing}
     >
-      <EditableCard.Section>
-        <EditableCard.Section.View>
+      <Card.Section>
+        <Card.Section.View>
           <h3 className="text-text-primary font-bold text-lg">{draft.role}</h3>
           <p className="text-text-secondary">
             {draft.company} &middot; {draft.location.city},{" "}
             {draft.location.country}
           </p>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <div className="grid grid-cols-2 gap-2">
             <TextField
               id="roleField"
@@ -145,17 +145,17 @@ function ExperienceItem({
               placeholder="United States"
             />
           </div>
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
-      <EditableCard.Section title="Duration">
-        <EditableCard.Section.View>
+      <Card.Section title="Duration">
+        <Card.Section.View>
           <p className="text-text-secondary">
             {draft.duration.start_date} &ndash; {draft.duration.end_date}
           </p>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <div className="grid grid-cols-2 gap-2">
             <TextField
               id="startDateField"
@@ -190,15 +190,15 @@ function ExperienceItem({
               helperText="e.g. 2024-11"
             />
           </div>
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
-      <EditableCard.Section title="Description">
-        <EditableCard.Section.View>
+      <Card.Section title="Description">
+        <Card.Section.View>
           <p className="text-text-secondary">{draft.description}</p>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <TextField
             id="descriptionField"
             label="Description"
@@ -208,27 +208,27 @@ function ExperienceItem({
             }
             placeholder="Describe your responsibilities and achievements..."
           />
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
-      <EditableCard.Section title="Highlights">
-        <EditableCard.Section.View>
+      <Card.Section title="Highlights">
+        <Card.Section.View>
           <ul className="list-disc list-inside text-text-secondary">
             {draft.highlights.map((h, i) => (
               <li key={i}>{h}</li>
             ))}
           </ul>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <HighlightsEditor
             highlights={draft.highlights}
             onChange={(highlights) =>
               onChange(updateProp(draft, "highlights", highlights))
             }
           />
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
       <BadgeSection
         fieldId="skillInput"
@@ -239,7 +239,7 @@ function ExperienceItem({
         onAddBadge={(value) => onChange(updateProp(draft, "skills", [...draft.skills, { name: value }]))}
         onRemoveBadge={(index) => onChange(updateProp(draft, "skills", draft.skills.filter((_, i) => i !== index)))}
       />
-    </EditableCard>
+    </Card>
   );
 }
 

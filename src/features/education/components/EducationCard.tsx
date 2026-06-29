@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import type { Education } from "../types";
 import BadgeSection from "../../../shared/components/sections/BadgeSection";
-import EditableCard from "../../../shared/components/cards/EditableCard";
+import Card from "../../../shared/components/cards/Card";
 import TextField from "../../../shared/components/forms/TextField";
 import IconButton from "../../../shared/components/buttons/IconButton";
 import { RemovableBadge } from "../../../shared/components/badges";
@@ -84,14 +84,14 @@ function EducationItem({
   defaultEditing?: boolean;
 }) {
   return (
-    <EditableCard
+    <Card
       onSave={onSave}
       onCancel={onCancel}
       onDelete={onDelete}
       defaultEditing={defaultEditing}
     >
-      <EditableCard.Section>
-        <EditableCard.Section.View>
+      <Card.Section>
+        <Card.Section.View>
           <h3 className="text-text-primary font-bold text-lg">
             {draft.qualification}
           </h3>
@@ -99,9 +99,9 @@ function EducationItem({
             {draft.school} &middot; {draft.location.city},{" "}
             {draft.location.country}
           </p>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <div className="grid grid-cols-2 gap-2">
             <TextField
               id="schoolField"
@@ -154,17 +154,17 @@ function EducationItem({
               placeholder="USA"
             />
           </div>
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
-      <EditableCard.Section title="Duration">
-        <EditableCard.Section.View>
+      <Card.Section title="Duration">
+        <Card.Section.View>
           <p className="text-text-secondary">
             {draft.duration.start_date} &ndash; {draft.duration.end_date}
           </p>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <div className="grid grid-cols-2 gap-2">
             <TextField
               id="startDateField"
@@ -199,19 +199,19 @@ function EducationItem({
               helperText="e.g. 2021-06"
             />
           </div>
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
-      <EditableCard.Section title="Specializations">
-        <EditableCard.Section.View>
+      <Card.Section title="Specializations">
+        <Card.Section.View>
           <ul className="list-disc list-inside text-text-secondary">
             {draft.specializations.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
           </ul>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <BadgeListEditor
             items={draft.specializations}
             onChange={(specializations) =>
@@ -220,19 +220,19 @@ function EducationItem({
             placeholder="Computer Science"
             inputId="specializationInput"
           />
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
-      <EditableCard.Section title="Coursework">
-        <EditableCard.Section.View>
+      <Card.Section title="Coursework">
+        <Card.Section.View>
           <ul className="list-disc list-inside text-text-secondary">
             {draft.coursework.map((c, i) => (
               <li key={i}>{c}</li>
             ))}
           </ul>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <BadgeListEditor
             items={draft.coursework}
             onChange={(coursework) =>
@@ -241,8 +241,8 @@ function EducationItem({
             placeholder="Data Structures"
             inputId="courseworkInput"
           />
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
       <BadgeSection
         fieldId="skillInput"
@@ -253,7 +253,7 @@ function EducationItem({
         onAddBadge={(value) => onChange(updateProp(draft, "skills", [...draft.skills, { name: value }]))}
         onRemoveBadge={(index) => onChange(updateProp(draft, "skills", draft.skills.filter((_, i) => i !== index)))}
       />
-    </EditableCard>
+    </Card>
   );
 }
 

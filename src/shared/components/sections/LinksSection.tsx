@@ -1,5 +1,5 @@
 import { Plus, Trash } from "lucide-react";
-import EditableCard from "../cards/EditableCard";
+import Card from "../cards/Card";
 import TextField from "../forms/TextField";
 import IconButton from "../buttons/IconButton";
 
@@ -23,8 +23,8 @@ export default function LinksSection({
   onRemoveLink,
 }: LinksSectionProps) {
   return (
-    <EditableCard.Section title={title}>
-      <EditableCard.Section.View>
+    <Card.Section title={title}>
+      <Card.Section.View>
         <ul>
           {links.map((link) => (
             <li key={link.name}>
@@ -37,9 +37,9 @@ export default function LinksSection({
             </li>
           ))}
         </ul>
-      </EditableCard.Section.View>
+      </Card.Section.View>
 
-      <EditableCard.Section.Edit>
+      <Card.Section.Edit>
         <div className="flex flex-col gap-2">
           {links.map((link, index) => (
             <div key={index} className="flex items-end gap-3">
@@ -85,7 +85,7 @@ export default function LinksSection({
             hoverStyle="hover:bg-layer-mantle"
           />
         </div>
-      </EditableCard.Section.Edit>
-    </EditableCard.Section>
+      </Card.Section.Edit>
+    </Card.Section>
   );
 }

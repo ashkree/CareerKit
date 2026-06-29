@@ -11,6 +11,7 @@ type IconButtonProps = {
 
   onClick: () => boolean | void | Promise<boolean | void>;
 
+  iconClass?: string;
   defaultStyle?: string;
   hoverStyle?: string;
   activeStyle?: string;
@@ -27,6 +28,7 @@ export default function IconButton({
   text,
   activeText,
   onClick,
+  iconClass,
   defaultStyle = "",
   hoverStyle = "",
   activeStyle = "",
@@ -76,7 +78,7 @@ export default function IconButton({
       onClick={handleClick}
     >
       <span className="flex items-center gap-2">
-        <IconText text={displayText} icon={DisplayIcon} />
+        <IconText iconClass={iconClass} text={displayText} icon={DisplayIcon} />
       </span>
     </button>
   );

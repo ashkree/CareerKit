@@ -2,35 +2,53 @@ import { createContext, ReactNode, useContext, useState } from "react";
 import IconButton from "../buttons/IconButton";
 import { Save, SquarePen, Trash, X } from "lucide-react";
 
-type EditableCardContextType = {
+type CardContextType = {
   isEditing: boolean;
   setIsEditing: (v: boolean) => void;
 };
 
-const EditableCardContext = createContext<EditableCardContextType | null>(null);
+const CardContext = createContext<CardContextType | null>(null);
 
-type EditableCardProps = {
+type CardProps = {
   onSave: () => boolean | void | Promise<boolean | void>;
-  onCancel: () => void;
+  onCancel?: () => void;
   onDelete?: () => void;
   defaultEditing?: boolean;
+  variant?: "editable" | "form";
   children: ReactNode;
 };
 
-function EditableCard({
+function Card({
   onSave,
   onCancel,
   onDelete,
   defaultEditing = false,
+  variant = "editable",
   children,
-}: EditableCardProps) {
+}: CardProps) {
   const [isEditing, setIsEditing] = useState(defaultEditing);
 
+  const effectiveIsEditing = variant === "form" ? true : isEditing;
+
   return (
-    <EditableCardContext.Provider value={{ isEditing, setIsEditing }}>
+    <CardContext.Provider
+      value={{ isEditing: effectiveIsEditing, setIsEditing }}
+    >
       <div className="relative bg-layer-crust p-4 border border-border-subtle rounded-xl flex flex-col gap-2">
         {children}
-        {isEditing ? (
+        {variant === "form" ? (
+          <div className="flex items-center justify-end gap-2">
+            <IconButton
+              icon={Save}
+              text="Save"
+              onClick={() => {
+                onSave();
+              }}
+              defaultStyle="text-success"
+              hoverStyle="hover:bg-success-bg"
+            />
+          </div>
+        ) : effectiveIsEditing ? (
           <div className="flex items-center justify-end gap-2">
             {onDelete && (
               <IconButton
@@ -46,7 +64,7 @@ function EditableCard({
               text="Cancel"
               onClick={() => {
                 setIsEditing(false);
-                onCancel();
+                onCancel?.();
               }}
               defaultStyle="text-text-secondary"
               hoverStyle="hover:bg-layer-mantle hover:text-text-primary"
@@ -73,7 +91,7 @@ function EditableCard({
           </div>
         )}
       </div>
-    </EditableCardContext.Provider>
+    </CardContext.Provider>
   );
 }
 
@@ -94,21 +112,21 @@ function Section({ title, children }: SectionProps) {
 }
 
 function SectionView({ children }: { children: ReactNode }) {
-  const ctx = useContext(EditableCardContext);
-  if (!ctx) throw new Error("Section.View must be used inside EditableCard");
+  const ctx = useContext(CardContext);
+  if (!ctx) throw new Error("Section.View must be used inside Card");
   if (ctx.isEditing) return null;
   return <>{children}</>;
 }
 
 function SectionEdit({ children }: { children: ReactNode }) {
-  const ctx = useContext(EditableCardContext);
-  if (!ctx) throw new Error("Section.Edit must be used inside EditableCard");
+  const ctx = useContext(CardContext);
+  if (!ctx) throw new Error("Section.Edit must be used inside Card");
   if (!ctx.isEditing) return null;
   return <>{children}</>;
 }
 
 Section.View = SectionView;
 Section.Edit = SectionEdit;
-EditableCard.Section = Section;
+Card.Section = Section;
 
-export default EditableCard;
+export default Card;

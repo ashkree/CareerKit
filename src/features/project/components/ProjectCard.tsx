@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 import type { Project } from "../types";
 import BadgeSection from "../../../shared/components/sections/BadgeSection";
 import LinksSection from "../../../shared/components/sections/LinksSection";
-import EditableCard from "../../../shared/components/cards/EditableCard";
+import Card from "../../../shared/components/cards/Card";
 import TextField from "../../../shared/components/forms/TextField";
 import IconButton from "../../../shared/components/buttons/IconButton";
 import { RemovableBadge } from "../../../shared/components/badges";
@@ -81,19 +81,19 @@ function ProjectItem({
   defaultEditing?: boolean;
 }) {
   return (
-    <EditableCard
+    <Card
       onSave={onSave}
       onCancel={onCancel}
       onDelete={onDelete}
       defaultEditing={defaultEditing}
     >
-      <EditableCard.Section>
-        <EditableCard.Section.View>
+      <Card.Section>
+        <Card.Section.View>
           <h3 className="text-text-primary font-bold text-lg">{draft.name}</h3>
           <p className="text-text-secondary">{draft.status}</p>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <div className="grid grid-cols-2 gap-2">
             <TextField
               id="nameField"
@@ -110,17 +110,17 @@ function ProjectItem({
               placeholder="Completed"
             />
           </div>
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
-      <EditableCard.Section title="Duration">
-        <EditableCard.Section.View>
+      <Card.Section title="Duration">
+        <Card.Section.View>
           <p className="text-text-secondary">
             {draft.duration.start_date} &ndash; {draft.duration.end_date}
           </p>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <div className="grid grid-cols-2 gap-2">
             <TextField
               id="startDateField"
@@ -155,15 +155,15 @@ function ProjectItem({
               helperText="e.g. 2023-06"
             />
           </div>
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
-      <EditableCard.Section title="Description">
-        <EditableCard.Section.View>
+      <Card.Section title="Description">
+        <Card.Section.View>
           <p className="text-text-secondary">{draft.description}</p>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <TextField
             id="descriptionField"
             label="Description"
@@ -173,27 +173,27 @@ function ProjectItem({
             }
             placeholder="Describe the project..."
           />
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
-      <EditableCard.Section title="Highlights">
-        <EditableCard.Section.View>
+      <Card.Section title="Highlights">
+        <Card.Section.View>
           <ul className="list-disc list-inside text-text-secondary">
             {draft.highlights.map((h, i) => (
               <li key={i}>{h}</li>
             ))}
           </ul>
-        </EditableCard.Section.View>
+        </Card.Section.View>
 
-        <EditableCard.Section.Edit>
+        <Card.Section.Edit>
           <HighlightsEditor
             highlights={draft.highlights}
             onChange={(highlights) =>
               onChange(updateProp(draft, "highlights", highlights))
             }
           />
-        </EditableCard.Section.Edit>
-      </EditableCard.Section>
+        </Card.Section.Edit>
+      </Card.Section>
 
       <LinksSection
         title="Links"
@@ -232,7 +232,7 @@ function ProjectItem({
         onAddBadge={(value) => onChange(updateProp(draft, "skills", [...draft.skills, { name: value }]))}
         onRemoveBadge={(index) => onChange(updateProp(draft, "skills", draft.skills.filter((_, i) => i !== index)))}
       />
-    </EditableCard>
+    </Card>
   );
 }
 

@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import TextField from "../../../shared/components/forms/TextField";
 import IconText from "../../../shared/components/IconText";
 import IconButton from "../../../shared/components/buttons/IconButton";
-import EditableCard from "../../../shared/components/cards/EditableCard";
+import Card from "../../../shared/components/cards/Card";
 import LinksSection from "../../../shared/components/sections/LinksSection";
 import { updateProp } from "../../../shared/utils/data_updates";
 import { getCountries, getCountryCallingCode } from "react-phone-number-input";
@@ -21,8 +21,8 @@ function NameSection({
   onChange: Dispatch<SetStateAction<Profile>>;
 }) {
   return (
-    <EditableCard.Section>
-      <EditableCard.Section.View>
+    <Card.Section>
+      <Card.Section.View>
         <h3 className="text-text-primary font-bold text-xl wrap-break-word pr-8">
           {draft.first_name} {draft.last_name}
         </h3>
@@ -32,9 +32,9 @@ function NameSection({
             text={`${draft.location.city}, ${draft.location.country}`}
           />
         </div>
-      </EditableCard.Section.View>
+      </Card.Section.View>
 
-      <EditableCard.Section.Edit>
+      <Card.Section.Edit>
         <div className="grid grid-cols-2 gap-2">
           <div className="flex-1">
             <TextField
@@ -97,8 +97,8 @@ function NameSection({
             placeholder="United Arab Emirates"
           />
         </div>
-      </EditableCard.Section.Edit>
-    </EditableCard.Section>
+      </Card.Section.Edit>
+    </Card.Section>
   );
 }
 
@@ -120,16 +120,16 @@ function ContactSection({
     .sort((a, b) => a.label.localeCompare(b.label));
 
   return (
-    <EditableCard.Section title="Your Contact Details">
-      <EditableCard.Section.View>
+    <Card.Section title="Your Contact Details">
+      <Card.Section.View>
         <IconText icon={Mail} text={draft.email} />
         <IconText
           icon={Phone}
           text={`+${draft.phone.country_code} - ${draft.phone.number}`}
         />
-      </EditableCard.Section.View>
+      </Card.Section.View>
 
-      <EditableCard.Section.Edit>
+      <Card.Section.Edit>
         <div className="flex flex-col gap-4">
           <TextField
             id="emailField"
@@ -178,8 +178,8 @@ function ContactSection({
             </div>
           </div>
         </div>
-      </EditableCard.Section.Edit>
-    </EditableCard.Section>
+      </Card.Section.Edit>
+    </Card.Section>
   );
 }
 
@@ -251,11 +251,7 @@ export default function PersonalDetailsCard() {
   }
 
   return (
-    <EditableCard
-      defaultEditing={creating}
-      onSave={handleSave}
-      onCancel={handleCancel}
-    >
+    <Card defaultEditing={creating} onSave={handleSave} onCancel={handleCancel}>
       <NameSection draft={draft} onChange={setDraft} />
       <ContactSection draft={draft} onChange={setDraft} />
       <LinksSection
@@ -263,16 +259,11 @@ export default function PersonalDetailsCard() {
         links={draft.links}
         onAddLink={() =>
           setDraft(
-            updateProp(draft, "links", [
-              ...draft.links,
-              { name: "", url: "" },
-            ]),
+            updateProp(draft, "links", [...draft.links, { name: "", url: "" }]),
           )
         }
         onUpdateLink={(index, link) => {
-          const updated = draft.links.map((l, i) =>
-            i === index ? link : l,
-          );
+          const updated = draft.links.map((l, i) => (i === index ? link : l));
           setDraft(updateProp(draft, "links", updated));
         }}
         onRemoveLink={(index) =>
@@ -304,6 +295,6 @@ export default function PersonalDetailsCard() {
           )
         }
       />
-    </EditableCard>
+    </Card>
   );
 }

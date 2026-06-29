@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Skill } from "../types";
-import EditableCard from "../../../shared/components/cards/EditableCard";
+import Card from "../../../shared/components/cards/Card";
 import BadgeSection from "../../../shared/components/sections/BadgeSection";
 import { diffArrays } from "../../../shared/utils/helpers";
 import { getSkills, insertSkills, deleteSkills } from "../api";
@@ -52,7 +52,7 @@ export default function SkillsCard() {
   }
 
   return (
-    <EditableCard onSave={handleSave} onCancel={handleCancel}>
+    <Card onSave={handleSave} onCancel={handleCancel}>
       <BadgeSection
         fieldId="skillInput"
         title="Skills"
@@ -62,6 +62,6 @@ export default function SkillsCard() {
         onAddBadge={(value) => setDraft([...draft, { name: value }])}
         onRemoveBadge={(index) => setDraft(draft.filter((_, i) => i !== index))}
       />
-    </EditableCard>
+    </Card>
   );
 }

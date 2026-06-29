@@ -1,5 +1,5 @@
 import { useState } from "react";
-import EditableCard from "../cards/EditableCard";
+import Card from "../cards/Card";
 
 import { Badge, RemovableBadge } from "../badges";
 import TextField from "../forms/TextField";
@@ -28,16 +28,16 @@ export default function BadgeSection<T>({
   const [newBadge, setNewBadge] = useState("");
 
   return (
-    <EditableCard.Section title={title}>
-      <EditableCard.Section.View>
-        <ul className="flex gap-2">
+    <Card.Section title={title}>
+      <Card.Section.View>
+        <ul className="flex flex-wrap gap-2">
           {arr.map((item, index) => (
             <Badge key={index} name={getLabel(item)} />
           ))}
         </ul>
-      </EditableCard.Section.View>
+      </Card.Section.View>
 
-      <EditableCard.Section.Edit>
+      <Card.Section.Edit>
         <div className="flex flex-col gap-2">
           <div className="flex gap-2 items-center">
             <div className="flex-1">
@@ -73,7 +73,7 @@ export default function BadgeSection<T>({
             ))}
           </ul>
         </div>
-      </EditableCard.Section.Edit>
-    </EditableCard.Section>
+      </Card.Section.Edit>
+    </Card.Section>
   );
 }
