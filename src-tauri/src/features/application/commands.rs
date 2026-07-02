@@ -34,19 +34,13 @@ pub fn get_application(state: tauri::State<AppDatabase>, id: i64) -> Result<Appl
 pub fn insert_application(
     state: tauri::State<AppDatabase>,
     application: Application,
-) -> Result<(), String> {
+) -> Result<i64, String> {
     info!("insert_application called");
     let conn = state.conn.lock().unwrap();
-    match db::insert_application(&conn, application) {
-        Ok(_) => {
-            info!("insert_application succeeded");
-            Ok(())
-        }
-        Err(err) => {
-            error!("insert_application failed: {}", err);
-            Err(err.to_string())
-        }
-    }
+    db::insert_application(&conn, application).map_err(|err| {
+        error!("insert_application failed: {}", err);
+        err.to_string()
+    })
 }
 
 #[tauri::command]

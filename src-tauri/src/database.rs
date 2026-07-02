@@ -19,7 +19,7 @@ pub fn init_db(in_memory: bool) -> Result<Connection> {
     } else {
         Connection::open("careerkit.db").unwrap()
     };
-    _ = MIGRATIONS.to_latest(&mut conn);
+    MIGRATIONS.to_latest(&mut conn).expect("Failed to run database migrations");
 
     Ok(conn)
 }

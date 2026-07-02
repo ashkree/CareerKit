@@ -27,6 +27,15 @@ rusqlite_migration = { version = "2.6.0", features = ["from-directory"] }
 include_dir = "0.7.4"
 tauri-plugin-log = "2.8.0"
 log = "0.4"
+anyhow = "1.0.103"
+encoding_rs = "0.8.35"
+mistralrs = "0.8.1"
+tokio = "1.52.3"
+
+[features]
+default = []
+seed = []
+cuda = []
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration

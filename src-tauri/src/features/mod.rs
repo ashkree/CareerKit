@@ -1,3 +1,4 @@
+pub mod ai_generation;
 pub mod application;
 pub mod education;
 pub mod experience;

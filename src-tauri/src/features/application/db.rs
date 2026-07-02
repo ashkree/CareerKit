@@ -16,6 +16,7 @@ pub fn get_applications(conn: &Connection) -> Result<Vec<Application>, Error> {
             status: row.get("status")?,
             date_saved: row.get("date_saved")?,
             date_applied: row.get("date_applied")?,
+            description: row.get("description")?,
             contact: row.get("contact")?,
             contact_email: row.get("contact_email")?,
             contact_linkedin_url: row.get("contact_linkedin_url")?,
@@ -37,6 +38,7 @@ pub fn get_application(conn: &Connection, id: i64) -> Result<Application, Error>
             status: row.get("status")?,
             date_saved: row.get("date_saved")?,
             date_applied: row.get("date_applied")?,
+            description: row.get("description")?,
             contact: row.get("contact")?,
             contact_email: row.get("contact_email")?,
             contact_linkedin_url: row.get("contact_linkedin_url")?,
@@ -44,10 +46,10 @@ pub fn get_application(conn: &Connection, id: i64) -> Result<Application, Error>
     })
 }
 
-pub fn insert_application(conn: &Connection, application: Application) -> Result<usize, Error> {
+pub fn insert_application(conn: &Connection, application: Application) -> Result<i64, Error> {
     conn.execute(
-        "INSERT INTO application (job_title, job_url, company, company_website, status, date_saved, date_applied, contact, contact_email, contact_linkedin_url)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+        "INSERT INTO application (job_title, job_url, company, company_website, status, date_saved, date_applied, description, contact, contact_email, contact_linkedin_url)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
         params![
             &application.job_title,
             &application.job_url,
@@ -56,11 +58,13 @@ pub fn insert_application(conn: &Connection, application: Application) -> Result
             &application.status,
             &application.date_saved,
             &application.date_applied,
+            &application.description,
             &application.contact,
             &application.contact_email,
             &application.contact_linkedin_url,
         ],
-    )
+    )?;
+    Ok(conn.last_insert_rowid())
 }
 
 pub fn update_application(
@@ -79,8 +83,9 @@ pub fn update_application(
             date_applied            = ?7,
             contact                 = ?8,
             contact_email           = ?9,
-            contact_linkedin_url    = ?10
-        WHERE id = ?11",
+            contact_linkedin_url    = ?10,
+            description             = ?11
+        WHERE id = ?12",
         params![
             &application.job_title,
             &application.job_url,
@@ -92,6 +97,7 @@ pub fn update_application(
             &application.contact,
             &application.contact_email,
             &application.contact_linkedin_url,
+            &application.description,
             &id
         ],
     )
@@ -122,6 +128,7 @@ mod tests {
                 status              TEXT,
                 date_saved          TEXT,
                 date_applied        TEXT,
+                description         TEXT,
                 contact             TEXT,
                 contact_email       TEXT,
                 contact_linkedin_url TEXT
@@ -142,6 +149,7 @@ mod tests {
                 status: "Saved".to_string(),
                 date_saved: "2025-01-15".to_string(),
                 date_applied: "".to_string(),
+                description: "Looking for a senior role".to_string(),
                 contact: "Jane Doe".to_string(),
                 contact_email: "jane@acme.com".to_string(),
                 contact_linkedin_url: "https://linkedin.com/in/janedoe".to_string(),
@@ -155,6 +163,7 @@ mod tests {
                 status: "Applied".to_string(),
                 date_saved: "2025-02-01".to_string(),
                 date_applied: "2025-02-10".to_string(),
+                description: "".to_string(),
                 contact: "".to_string(),
                 contact_email: "".to_string(),
                 contact_linkedin_url: "".to_string(),

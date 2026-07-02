@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS application (
     status TEXT,
     date_saved TEXT,
     date_applied TEXT,
+    description TEXT,
     contact TEXT,
     contact_email TEXT,
     contact_linkedin_url TEXT

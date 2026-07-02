@@ -10,6 +10,7 @@ pub struct Application {
     pub status: String,
     pub date_saved: String,
     pub date_applied: String,
+    pub description: String,
     pub contact: String,
     pub contact_email: String,
     pub contact_linkedin_url: String,

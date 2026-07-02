@@ -1,23 +1,26 @@
 use crate::database::init_db;
-mod features;
 pub mod database;
-mod shared;
+pub mod features;
 mod seed;
+mod shared;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let conn = init_db(false).unwrap();
-    // seed::seed(&mut conn).expect("seeding faild");
+    #[cfg(feature = "seed")]
+    let mut conn = init_db(true).unwrap();
+    #[cfg(not(feature = "seed"))]
+    let mut conn = init_db(false).unwrap();
+
+    #[cfg(feature = "seed")]
+    seed::seed(&mut conn).expect("seeding failed");
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_log::Builder::new()
                 .targets([
-                    tauri_plugin_log::Target::new(
-                        tauri_plugin_log::TargetKind::Stdout,
-                    )
-                    .filter(|metadata| metadata.target().starts_with("career_kit")),
+                    tauri_plugin_log::Target::new(tauri_plugin_log::TargetKind::Stdout)
+                        .filter(|metadata| metadata.target().starts_with("career_kit")),
                 ])
                 .level(log::LevelFilter::Info)
                 .format(|out, message, record| {

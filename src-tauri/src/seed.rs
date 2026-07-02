@@ -141,6 +141,97 @@ pub fn seed(conn: &mut Connection) -> Result<()> {
         )?;
     }
 
+    // --- Applications ---
+    tx.execute(
+        "INSERT INTO application (job_title, job_url, company, company_website, status, date_saved, date_applied, description, contact, contact_email, contact_linkedin_url)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+        params![
+            "Senior Rust Engineer",
+            "https://linkedin.com/jobs/view/123",
+            "Neuralink Corp",
+            "https://neuralink.com",
+            "saved",
+            "2026-06-15",
+            "",
+            "Build high-performance distributed systems for real-time data processing. Must have 5+ years of Rust experience.",
+            "Sarah Chen",
+            "sarah@neuralink.com",
+            "https://linkedin.com/in/sarahchen",
+        ],
+    )?;
+
+    tx.execute(
+        "INSERT INTO application (job_title, job_url, company, company_website, status, date_saved, date_applied, description, contact, contact_email, contact_linkedin_url)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+        params![
+            "Staff Software Engineer",
+            "https://example.com/jobs/456",
+            "DataFlow Inc",
+            "https://dataflow.io",
+            "applied",
+            "2026-06-10",
+            "2026-06-12",
+            "Lead the backend platform team building next-gen data infrastructure at scale.",
+            "",
+            "",
+            "",
+        ],
+    )?;
+
+    tx.execute(
+        "INSERT INTO application (job_title, job_url, company, company_website, status, date_saved, date_applied, description, contact, contact_email, contact_linkedin_url)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+        params![
+            "Engineering Manager",
+            "https://example.com/jobs/789",
+            "TechGrowth Inc",
+            "https://techgrowth.com",
+            "interview",
+            "2026-05-28",
+            "2026-06-01",
+            "Manage a team of 8 backend engineers building SaaS products for enterprise customers.",
+            "Mike Johnson",
+            "mike@techgrowth.com",
+            "https://linkedin.com/in/mikejohnson",
+        ],
+    )?;
+
+    tx.execute(
+        "INSERT INTO application (job_title, job_url, company, company_website, status, date_saved, date_applied, description, contact, contact_email, contact_linkedin_url)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+        params![
+            "Principal Architect",
+            "https://example.com/jobs/101",
+            "CloudScale Systems",
+            "https://cloudscale.io",
+            "rejected",
+            "2026-05-10",
+            "2026-05-12",
+            "Design and own the technical architecture for a multi-tenant cloud platform serving 10M+ users.",
+            "Emily Park",
+            "emily@cloudscale.io",
+            "https://linkedin.com/in/emilypark",
+        ],
+    )?;
+
+    tx.execute(
+        "INSERT INTO application (job_title, job_url, company, company_website, status, date_saved, date_applied, description, contact, contact_email, contact_linkedin_url)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+        params![
+            "Lead Platform Engineer",
+            "https://example.com/jobs/202",
+            "Finova Financial",
+            "https://finova.com",
+            "offer_received",
+            "2026-05-20",
+            "2026-05-22",
+            "Lead platform engineering for a fintech startup post-Series B. Build internal developer platform and core infrastructure.",
+            "David Kim",
+            "david@finova.com",
+            "https://linkedin.com/in/davidkim",
+        ],
+    )?;
+
     tx.commit()?;
     println!("Database seeded with dummy data.");
     Ok(())
